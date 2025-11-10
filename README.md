@@ -95,3 +95,57 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+## 安卓密钥
+
+```
+keytool -genkeypair -v -storetype PKCS12 -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+```
+
+正在为以下对象生成 2,048 位 RSA 密钥对和自签名证书 (SHA256withRSA) (有效期为 10,000 天):
+CN=xiwen, OU=test, O=test, L=test, ST=test, C=cn
+[正在存储 my-release-key.keystore]
+
+口令 123456
+
+## 打包到真机
+
+```
+npm run android -- --mode="release"
+```
+
+<!-- 目前发现原生模块和原生组件只能选一个进行编译 -->
+
+## 编译原生模块 package.json 配置
+
+```
+   "codegenConfig": {
+     "name": "NativeLocalStorageSpec",
+     "type": "modules",
+     "jsSrcsDir": "specs",
+     "android": {
+       "javaPackageName": "com.nativelocalstorage"
+     }
+   },
+```
+
+## 编译原生组件 package.json 配置
+
+```
+  "codegenConfig": {
+    "name": "AppSpec",
+    "type": "components",
+    "jsSrcsDir": "specs",
+    "android": {
+      "javaPackageName": "com.webview"
+    }
+  },
+```
+
+## 设置 APP 名称、应用图标、为安卓添加启动图
+
+https://blog.csdn.net/Landen2011/article/details/125603821
+
+## 生成图标
+
+https://icon.wuruihong.com/
