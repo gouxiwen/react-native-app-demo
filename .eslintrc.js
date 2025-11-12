@@ -3,5 +3,7 @@ module.exports = {
   extends: '@react-native',
   rules: {
     'react-native/no-inline-styles': 'off',
-  }
+    'no-alert': 'off',
+    'react/no-unstable-nested-components': ['error', { allowAsProps: true }],
+  },
 };

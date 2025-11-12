@@ -146,6 +146,14 @@ npm run android -- --mode="release"
 
 https://blog.csdn.net/Landen2011/article/details/125603821
 
-## 生成图标
+### 生成图标
 
 https://icon.wuruihong.com/
+
+## 网络请求调试
+
+使用 reactotron，reactotron 使用配套的插件 reactotron-react-native 连接到应用，插件配置文件 ReactotronConfig.js
+
+https://docs.infinite.red/reactotron/quick-start/react-native/
+
+react-native-debugger 在新版本上已不可用，react-native-debugger 依赖远程 js 调试，但在 React Native 0.73 版本中，远程 JavaScript 调试功能已被弃用，未来版本将彻底移除。

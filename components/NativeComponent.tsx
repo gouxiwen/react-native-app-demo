@@ -6,7 +6,7 @@ function NativeComponentDemo(): React.JSX.Element {
   return (
     <View style={styles.container}>
       <WebView
-        sourceURL="https://www.baidu.com/"
+        sourceURL="https://m.baidu.com/"
         style={styles.webview}
         onScriptLoaded={() => {
           Alert.alert('Page Loaded');
