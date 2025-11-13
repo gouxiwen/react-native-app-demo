@@ -9,14 +9,6 @@
     "start": "react-native start",
     "test": "jest"
   },
-  "codegenConfig": {
-    "name": "AppSpec",
-    "type": "components",
-    "jsSrcsDir": "specs",
-    "android": {
-      "javaPackageName": "com.webview"
-    }
-  },
   "dependencies": {
     "@react-native-vector-icons/ant-design": "^12.4.0",
     "@react-native/new-app-screen": "0.82.1",
