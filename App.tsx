@@ -23,6 +23,11 @@ import DetailsScreen from './views/Details';
 import CreatePostScreen from './views/CreatePost';
 import ProfileScreen from './views/Profile';
 import SplashScreen from 'react-native-splash-screen';
+//要调用的配置文件写功能,如：app.tsx
+import Config from 'react-native-config';
+
+//打印接口域名配置信息
+console.log(Config.FLAVOR, '=Config==config', Config);
 
 // function LogoTitle(props: any) {
 //   console.log(props);

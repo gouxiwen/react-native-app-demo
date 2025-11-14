@@ -8,6 +8,7 @@ import android.os.Bundle
 import com.swmansion.rnscreens.fragment.restoration.RNScreensFragmentFactory
 import org.devio.rn.splashscreen.SplashScreen;
 
+
 class MainActivity : ReactActivity() {
 
   /**

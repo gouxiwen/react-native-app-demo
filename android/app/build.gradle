@@ -84,6 +84,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        resValue "string", "build_config_package", "testApp"
     }
     signingConfigs {
         debug {
@@ -117,6 +118,51 @@ android {
     // 是否开启png图片优化检查，开启打包生成包时会编译报错AAPT: error: file failed to compile
     aaptOptions.cruncherEnabled = false     
     aaptOptions.useNewCruncher = false
+
+    flavorDimensions "default"
+    productFlavors {
+        dev {
+            applicationId "com.reactnativeapp.debug"
+            manifestPlaceholders = [
+                app_name: "@string/app_name_debug",
+                app_icon: "@mipmap/ic_launcher"
+            ]
+            buildConfigField "String", "FLAVOR", "\"dev\""
+            buildConfigField "String", "APP_API_URL", "\"https://test.detaultApi.com\""
+            buildConfigField "String", "ENVIRONMENT", "\"development\""
+            buildConfigField "boolean", "DEBUG", "true"
+        }
+        staging {
+            applicationId "com.reactnativeapp.staging"
+            manifestPlaceholders = [
+                app_name: "@string/app_name_staging",
+                app_icon: "@mipmap/ic_launcher"
+            ]
+            buildConfigField "String", "FLAVOR", "\"staging\""
+            buildConfigField "String", "ENVIRONMENT", "\"staging\""
+            buildConfigField "String", "APP_API_URL", "\"https://test.detaultApi.com\""
+            buildConfigField "boolean", "DEBUG", "true"
+        }
+        prod {
+            applicationId "com.reactnativeapp"
+            manifestPlaceholders = [
+                app_name: "@string/app_name",
+                app_icon: "@mipmap/ic_launcher"
+            ]
+            buildConfigField "String", "FLAVOR", "\"prod\""
+            buildConfigField "String", "APP_API_URL", "\"https://detaultApi.com\""
+            buildConfigField "String", "ENVIRONMENT", "\"production\""
+            buildConfigField "boolean", "DEBUG", "false"
+            
+            // 为生产环境添加更多调试信息
+            buildConfigField "String", "BUILD_TIME", "\"${new Date().format('yyyy-MM-dd HH:mm:ss')}\""
+            buildConfigField "String", "BUILD_TYPE_NAME", "\"production\""
+            
+            // 添加调试字段，帮助诊断问题
+            buildConfigField "String", "NATIVE_MODULES_ENABLED", "\"true\""
+            buildConfigField "String", "HERMES_ENABLED", "\"${hermesEnabled}\""
+        }
+    }
 }
 
 dependencies {

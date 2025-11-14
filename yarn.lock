@@ -5571,6 +5571,11 @@ react-is@^19.1.0, react-is@^19.1.1:
   resolved "https://registry.npmmirror.com/react-is/-/react-is-19.2.0.tgz#ddc3b4a4e0f3336c3847f18b806506388d7b9973"
   integrity sha512-x3Ax3kNSMIIkyVYhWPyO09bu0uttcAIoecO/um/rKGQ4EltYWVYtyiGkS/3xMynrbVQdS69Jhlv8FXUEZehlzA==
 
+react-native-config@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.npmmirror.com/react-native-config/-/react-native-config-1.6.0.tgz#dd830c8ada35eb17ad1371569515836d34230bd7"
+  integrity sha512-UtiKWiLlSNgWf/9CPMkM1UoOHtnc7p9YyvUb9DozgQ41xcRhImGfh6nAtW9HhWhfsvMgTdq7l+xSMn9JPW0SLQ==
+
 react-native-safe-area-context@^5.5.2:
   version "5.6.2"
   resolved "https://registry.npmmirror.com/react-native-safe-area-context/-/react-native-safe-area-context-5.6.2.tgz#283e006f5b434fb247fcb4be0971ad7473d5c560"
