@@ -114,6 +114,9 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    // 是否开启png图片优化检查，开启打包生成包时会编译报错AAPT: error: file failed to compile
+    aaptOptions.cruncherEnabled = false     
+    aaptOptions.useNewCruncher = false
 }
 
 dependencies {

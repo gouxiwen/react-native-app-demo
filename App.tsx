@@ -16,13 +16,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import { Button /* , PlatformPressable  */ } from '@react-navigation/elements';
 import AntDesign from '@react-native-vector-icons/ant-design';
 import type { StaticParamList } from '@react-navigation/native';
-
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MessageScreen from './views/Message';
 import HomeScreen from './views/Home';
 import DetailsScreen from './views/Details';
 import CreatePostScreen from './views/CreatePost';
 import ProfileScreen from './views/Profile';
+import SplashScreen from 'react-native-splash-screen';
 
 // function LogoTitle(props: any) {
 //   console.log(props);
@@ -225,6 +225,21 @@ declare global {
 const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
+  React.useEffect(() => {
+    // 启动页结束前，做一些初始化操作
+    const init = async () => {
+      return new Promise<string>(resolve => {
+        setTimeout(() => {
+          resolve('done');
+        }, 2000);
+      });
+    };
+
+    init().finally(async () => {
+      await SplashScreen.hide(); // 关闭启动页
+      console.log('BootSplash has been hidden successfully');
+    });
+  }, []);
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <SafeAreaProvider>

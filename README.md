@@ -142,9 +142,25 @@ npm run android -- --mode="release"
   },
 ```
 
-## 设置 APP 名称、应用图标、为安卓添加启动图
+## 设置 APP 名称、应用图标
 
 https://blog.csdn.net/Landen2011/article/details/125603821
+
+## 为安卓添加启动图
+
+https://blog.csdn.net/qq_39524670/article/details/83020123
+
+### 解决打包生成时报错 AAPT: error: file failed to compile
+
+解决办法：在项目的 build.gradle 中 android 层内添加以下：
+aaptOptions {
+// 是否开启 png 图片优化检查
+useNewCruncher false
+cruncherEnabled false
+}
+或者
+aaptOptions.cruncherEnabled = false  
+aaptOptions.useNewCruncher = false
 
 ### 生成图标
 

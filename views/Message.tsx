@@ -10,7 +10,7 @@ import {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1, // flatlist不用这只flex:1，否则无法滚动
+    // flex: 1, // flatlist不用设置flex:1，否则无法滚动
     // backgroundColor: 'pink',
     alignItems: 'center',
   },
@@ -42,6 +42,7 @@ const MessageScreen = () => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     pageNo.current = 0;
+    setShowFoot(0);
     setData(
       mock(pageNo.current, pageSize).map(item => ({
         ...item,
@@ -110,11 +111,7 @@ const MessageScreen = () => {
         </View>
       );
     } else if (showFoot === 0) {
-      return (
-        <View style={styles.footer}>
-          <Text></Text>
-        </View>
-      );
+      return <View style={styles.footer}>{/* <Text></Text>  */}</View>;
     }
   }
 
