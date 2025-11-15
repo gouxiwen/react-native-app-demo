@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -84,6 +85,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        // 这个很重要，要不然找不到配置的环境变量
         resValue "string", "build_config_package", "testApp"
     }
     signingConfigs {
@@ -109,7 +111,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
@@ -119,7 +121,9 @@ android {
     aaptOptions.cruncherEnabled = false     
     aaptOptions.useNewCruncher = false
 
+     // 定义维度名称（用于多维度组合）
     flavorDimensions "default"
+    // 产品风味
     productFlavors {
         dev {
             applicationId "com.reactnativeapp.debug"
@@ -127,8 +131,14 @@ android {
                 app_name: "@string/app_name_debug",
                 app_icon: "@mipmap/ic_launcher"
             ]
-            buildConfigField "String", "FLAVOR", "\"dev\""
-            buildConfigField "String", "APP_API_URL", "\"https://test.detaultApi.com\""
+            // 在 .env 文件中设置的配置变量经过react-native-config可通过 BuildConfig 供 Java 类使用：
+            // 这里的buildConfigField主要用于定义不同版本的BuildConfig。如：
+            // String apiUrl = BuildConfig.APP_API_URL;
+            // boolean isDebug = BuildConfig.DEBUG;
+
+            buildConfigField "String", "FLAVOR", "\"dev\"" 
+            // buildConfigField "String", "APP_API_URL", "\"https://dev.detaultApi.com\""
+            buildConfigField "String", "APP_API_URL", project.env.get('APP_API_URL')
             buildConfigField "String", "ENVIRONMENT", "\"development\""
             buildConfigField "boolean", "DEBUG", "true"
         }
@@ -140,7 +150,8 @@ android {
             ]
             buildConfigField "String", "FLAVOR", "\"staging\""
             buildConfigField "String", "ENVIRONMENT", "\"staging\""
-            buildConfigField "String", "APP_API_URL", "\"https://test.detaultApi.com\""
+            // buildConfigField "String", "APP_API_URL", "\"https://test.detaultApi.com\""
+            buildConfigField "String", "APP_API_URL", project.staging.get('APP_API_URL')
             buildConfigField "boolean", "DEBUG", "true"
         }
         prod {
@@ -150,7 +161,8 @@ android {
                 app_icon: "@mipmap/ic_launcher"
             ]
             buildConfigField "String", "FLAVOR", "\"prod\""
-            buildConfigField "String", "APP_API_URL", "\"https://detaultApi.com\""
+            // buildConfigField "String", "APP_API_URL", "\"https://detaultApi.com\""
+            buildConfigField "String", "APP_API_URL", project.prod.get('APP_API_URL')
             buildConfigField "String", "ENVIRONMENT", "\"production\""
             buildConfigField "boolean", "DEBUG", "false"
             

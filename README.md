@@ -173,3 +173,11 @@ https://icon.wuruihong.com/
 https://docs.infinite.red/reactotron/quick-start/react-native/
 
 react-native-debugger 在新版本上已不可用，react-native-debugger 依赖远程 js 调试，但在 React Native 0.73 版本中，远程 JavaScript 调试功能已被弃用，未来版本将彻底移除。
+
+## 环境变量
+
+执行./gradlew assembleRelease 打包安卓
+
+assembleDevRelease，assembleStagingRelease，assembleProdRelease 对应 build.gradle 中的 productFlavors
+
+mode=DevDebug 为 productFlavors 和 buildTypes 组合的 build 变体，此命令等效于 cd android && ./gradlew installDevDebug
