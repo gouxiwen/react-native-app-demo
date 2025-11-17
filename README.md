@@ -176,8 +176,36 @@ react-native-debugger 在新版本上已不可用，react-native-debugger 依赖
 
 ## 环境变量
 
+不同终端加载环境变量
+
+```
+$ ENVFILE=.env.staging react-native run-ios # bash
+$ SET ENVFILE=.env.staging && react-native run-ios # windows
+$ env:ENVFILE=".env.staging"; react-native run-ios # powershell
+```
+
+## 构建任务
+
+assemble、bundle、compile、package、install
+
+assemble：编译并打包，生成 APK 文件
+
+bundle：编译并打包，生成 AAB 文件
+
+install：安装 APK 文件到设备
+
+https://blog.csdn.net/shuizhizhiyin/article/details/140548517
+
+### 构建类型
+
+assembleRelease，assembleRelease 对应 build.gradle 中的 buildType，如 assembleDebug、assembleRelease，也可以自定义其他构建类型，如 staging
+
 执行./gradlew assembleRelease 打包安卓
+
+### 不同风味打包
 
 assembleDevRelease，assembleStagingRelease，assembleProdRelease 对应 build.gradle 中的 productFlavors
 
-mode=DevDebug 为 productFlavors 和 buildTypes 组合的 build 变体，此命令等效于 cd android && ./gradlew installDevDebug
+--mode=DevDebug 为 productFlavors 和 buildTypes 组合的 build 变体，此命令等效于 cd android && ./gradlew installDevDebug，可以自由组合不同的构建类型和变体
+
+安卓构建文档：https://developer.android.com/build/build-variants?hl=zh-cn#groovy
