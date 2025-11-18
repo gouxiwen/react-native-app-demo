@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from '@react-navigation/elements';
 import type { StaticScreenProps } from '@react-navigation/native';
-import { CommonNavigationProps } from '../global';
+import { CommonNavigationProps } from '../../global';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function DetailsScreen({

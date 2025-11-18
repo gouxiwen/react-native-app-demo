@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from '@react-navigation/elements';
-import { CommonNavigationProps } from '../global';
+import { CommonNavigationProps } from '../../global';
 
 function CreatePostScreen() {
   const navigation = useNavigation<CommonNavigationProps>();

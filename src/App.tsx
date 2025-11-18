@@ -25,6 +25,7 @@ import ProfileScreen from './views/Profile';
 import SplashScreen from 'react-native-splash-screen';
 //要调用的配置文件写功能,如：app.tsx
 import Config from 'react-native-config';
+import AiImageScreen from './views/AiImage';
 
 //打印接口域名配置信息
 console.log(Config.FLAVOR, '=Config==config', Config);
@@ -121,7 +122,7 @@ const HomeBottomTabs = createBottomTabNavigator({
     Home: {
       screen: HomeScreen,
       options: {
-        // title: 'Home',
+        title: '首页',
         // headerTitle: props => <LogoTitle {...props} />,
         // headerRight: () => <Button>Update count</Button>,
         tabBarIcon: ({ /* focused, */ color, size }) => (
@@ -129,13 +130,23 @@ const HomeBottomTabs = createBottomTabNavigator({
         ),
       },
     },
+    AiImage: {
+      screen: AiImageScreen,
+      options: {
+        title: 'AI图片',
+        tabBarIcon: ({ /* focused, */ color, size }) => (
+          <AntDesign name="file-image" color={color} size={size} />
+        ),
+      },
+    },
     Message: {
       screen: MessageScreen,
       options: {
+        title: '消息',
         tabBarIcon: ({ /* focused, */ color, size }) => (
           <AntDesign name="comment" color={color} size={size} />
         ),
-        tabBarBadge: 1,
+        // tabBarBadge: 0,
       },
     },
   },

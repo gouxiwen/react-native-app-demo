@@ -7,7 +7,7 @@ import {
   Button,
 } from 'react-native';
 
-import NativeLocalStorage from '../specs/NativeLocalStorage';
+import NativeLocalStorage from '../../specs/NativeLocalStorage';
 
 const EMPTY = '<empty>';
 

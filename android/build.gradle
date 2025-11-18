@@ -19,3 +19,8 @@ buildscript {
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+// 使用react-native-fast-image组件时，如果您在应用程序中使用 AppGlideModule 来使用 Glide，则需要阻止将 AppGlideModule 包含在此包中
+project.ext {
+    excludeAppGlideModule = true
+}
