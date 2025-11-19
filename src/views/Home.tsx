@@ -1,16 +1,23 @@
 import * as React from 'react';
-import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 // import { useNavigation } from '@react-navigation/native';
 // import { Button } from '@react-navigation/elements';
 // import type { StaticScreenProps } from '@react-navigation/native';
 // import { CommonNavigationProps } from '../../global';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { fetchGetTianqi } from '../services/http';
+import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
 
 function HomeScreen() {
   // function HomeScreen({ route }: StaticScreenProps<{ post: any }>) {
   // const navigation = useNavigation<CommonNavigationProps>();
-  const insets = useSafeAreaInsets();
 
   // Use an effect to monitor the update to params
   // React.useEffect(() => {
@@ -53,50 +60,45 @@ function HomeScreen() {
   }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        paddingLeft: insets.left,
-        paddingRight: insets.right,
-      }}
-    >
-      <TextInput
-        style={styles.input}
-        placeholder="请输入城市"
-        onChangeText={newText => setText(newText)}
-        defaultValue={text}
-      />
-      <Button title="查询天气" onPress={getTianqi} />
-      <View style={styles.tianqi}>
-        {tianqi?.current && (
-          <>
-            <View style={styles.city}>
-              <Text style={styles.cityText}>{tianqi.current.city}</Text>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'column',
-                marginBottom: 12,
-              }}
-            >
-              <View style={styles.info}>
-                <Text style={styles.infoLabel}>天气</Text>
-                <Text style={styles.infoText}>{tianqi.current.weather}</Text>
+    <CustomSafeAreaViws>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <TextInput
+          style={styles.input}
+          placeholder="请输入城市"
+          onChangeText={newText => setText(newText)}
+          defaultValue={text}
+        />
+        <Button title="查询天气" onPress={getTianqi} />
+        <View style={styles.tianqi}>
+          {tianqi?.current && (
+            <>
+              <View style={styles.city}>
+                <Text style={styles.cityText}>{tianqi.current.city}</Text>
               </View>
 
-              <View style={styles.info}>
-                <Text style={styles.infoLabel}>温度</Text>
-                <Text style={styles.infoText}>{tianqi.current.temp}</Text>
+              <View
+                style={{
+                  flexDirection: 'column',
+                  marginBottom: 12,
+                }}
+              >
+                <View style={styles.info}>
+                  <Text style={styles.infoLabel}>天气</Text>
+                  <Text style={styles.infoText}>{tianqi.current.weather}</Text>
+                </View>
+
+                <View style={styles.info}>
+                  <Text style={styles.infoLabel}>温度</Text>
+                  <Text style={styles.infoText}>{tianqi.current.temp}</Text>
+                </View>
               </View>
-            </View>
-          </>
-        )}
-      </View>
+            </>
+          )}
+        </View>
+      </KeyboardAvoidingView>
       {/* <Button
         onPress={() => {
           navigation.navigate('Details', {
@@ -122,11 +124,17 @@ function HomeScreen() {
       </Button>
       <Text>{count}</Text>
       <Button onPress={() => navigation.navigate('Help')}>Help</Button> */}
-    </View>
+    </CustomSafeAreaViws>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   tianqi: {
     width: '80%',
     backgroundColor: '#ffffff',

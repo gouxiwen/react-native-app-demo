@@ -17,7 +17,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AntDesign from '@react-native-vector-icons/ant-design';
 import type { StaticParamList } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import MessageScreen from './views/Message';
 import HomeScreen from './views/Home';
 import DetailsScreen from './views/Details';
 import CreatePostScreen from './views/CreatePost';
@@ -26,6 +25,9 @@ import SplashScreen from 'react-native-splash-screen';
 //要调用的配置文件写功能,如：app.tsx
 import Config from 'react-native-config';
 import AiImageScreen from './views/AiImage';
+import MinVideoScreen from './views/MinVideo';
+import VideoPlayerScreen from './views/VideoPlayer';
+import { VideoItemType } from '../global';
 
 //打印接口域名配置信息
 console.log(Config.FLAVOR, '=Config==config', Config);
@@ -135,16 +137,16 @@ const HomeBottomTabs = createBottomTabNavigator({
       options: {
         title: 'AI图片',
         tabBarIcon: ({ /* focused, */ color, size }) => (
-          <AntDesign name="file-image" color={color} size={size} />
+          <AntDesign name="picture" color={color} size={size} />
         ),
       },
     },
-    Message: {
-      screen: MessageScreen,
+    MinVideo: {
+      screen: MinVideoScreen,
       options: {
-        title: '消息',
+        title: '短视频',
         tabBarIcon: ({ /* focused, */ color, size }) => (
-          <AntDesign name="comment" color={color} size={size} />
+          <AntDesign name="youtube" color={color} size={size} />
         ),
         // tabBarBadge: 0,
       },
@@ -177,6 +179,13 @@ const RootStack = createNativeStackNavigator({
       options: {
         headerShown: false,
       },
+    },
+    VideoPlayer: {
+      screen: VideoPlayerScreen,
+      options: ({ route }) => ({
+        headerShown: false,
+        title: (route.params as VideoItemType).title,
+      }),
     },
     Details: {
       screen: DetailsScreen,

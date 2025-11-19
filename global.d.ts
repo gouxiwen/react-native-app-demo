@@ -8,6 +8,10 @@ export type CommonNavigationProps = NativeStackNavigationProp<{
         post?: string;
       }
     | undefined;
+  AiImage: undefined;
+  MinVideo: undefined;
+  Message: undefined;
+  VideoPlayer: VideoItemType;
   Details: {
     itemId: number;
     otherParam?: string;
@@ -27,9 +31,19 @@ export type CommonNavigationProps = NativeStackNavigationProp<{
 
 declare module 'react-native-config' {
   export interface NativeConfig {
-      HOSTNAME?: string;
+    HOSTNAME?: string;
   }
-  
-  export const Config: NativeConfig
-  export default Config
+
+  export const Config: NativeConfig;
+  export default Config;
 }
+
+export type VideoItemType = {
+  id: number;
+  title: string;
+  alias: string;
+  picuser: string;
+  picurl: string;
+  playurl: string;
+  sec: string;
+};

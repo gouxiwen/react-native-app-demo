@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Button, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button, StyleSheet } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { fetchGetAiImg } from '../services/http';
+import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
 
 function AiImageScreen() {
-  const insets = useSafeAreaInsets();
   const [imageUrl, setImageUrl] = React.useState<string>();
 
   const getImageUrl = async () => {
@@ -17,24 +16,14 @@ function AiImageScreen() {
   }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        paddingLeft: insets.left,
-        paddingRight: insets.right,
-      }}
-    >
+    <CustomSafeAreaViws>
       <FastImage
         style={styles.image}
         source={{ uri: imageUrl, priority: FastImage.priority.normal }}
         resizeMode={FastImage.resizeMode.contain}
       />
       <Button title="更新图片" onPress={getImageUrl} />
-    </View>
+    </CustomSafeAreaViws>
   );
 }
 

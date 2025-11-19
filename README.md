@@ -1,3 +1,11 @@
+## 启动
+
+如果使用多线程插件 react-native-worklets，推荐清除 Metro 打包器缓存在启动服务
+
+```
+yarn start --reset-cache
+```
+
 ## 安卓密钥
 
 ```

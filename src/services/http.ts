@@ -14,3 +14,11 @@ export function fetchGetAiImg() {
     type: 'txt',
   });
 }
+// ---------->获取短视频列表
+export type VideoListParams = {
+  page: number;
+  size: number;
+};
+export function fetchGetMinVideo(data: VideoListParams) {
+  return get('https://api.apiopen.top/api/getMiniVideo', data);
+}

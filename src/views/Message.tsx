@@ -32,7 +32,7 @@ const mock = (pageNum: number, pageSize: number) =>
   Array.from({ length: pageSize }).map((_, index) => ({
     key: `Item ${pageNum * pageSize + index + 1}`,
   }));
-const MessageScreen = () => {
+function MessageScreen() {
   const [refreshing, setRefreshing] = React.useState(false);
   const pageNo = React.useRef(0);
   const pageSize = 20;
@@ -129,6 +129,6 @@ const MessageScreen = () => {
       keyExtractor={item => item.key}
     />
   );
-};
+}
 
 export default MessageScreen;
