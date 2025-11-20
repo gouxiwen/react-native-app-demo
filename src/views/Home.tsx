@@ -7,6 +7,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 // import { useNavigation } from '@react-navigation/native';
 // import { Button } from '@react-navigation/elements';
@@ -14,7 +15,15 @@ import {
 // import { CommonNavigationProps } from '../../global';
 import { fetchGetTianqi } from '../services/http';
 import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
+import { primaryColor } from '../common/const';
 
+const defaultInfo = {
+  current: {
+    city: '--',
+    weather: '--',
+    temp: '--',
+  },
+};
 function HomeScreen() {
   // function HomeScreen({ route }: StaticScreenProps<{ post: any }>) {
   // const navigation = useNavigation<CommonNavigationProps>();
@@ -46,32 +55,37 @@ function HomeScreen() {
   //   });
   // }, [navigation]);
   const [text, setText] = React.useState('');
-  const [tianqi, setTianqi] = React.useState<any>({});
+  const [loading, setLoading] = React.useState(false);
+  const [tianqi, setTianqi] = React.useState<any>(defaultInfo);
   const getTianqi = async () => {
+    setLoading(true);
     const res = await fetchGetTianqi({
       city: text || '深圳',
       type: 'json',
     });
-    setTianqi(res.data);
+    setLoading(false);
+    if (res.data) setTianqi(res.data);
+    else setTianqi(defaultInfo);
   };
   React.useEffect(() => {
     getTianqi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (loading)
+    return (
+      <ActivityIndicator
+        style={{ flex: 1 }}
+        color={primaryColor}
+        size="large"
+      />
+    );
   return (
     <CustomSafeAreaViws>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
       >
-        <TextInput
-          style={styles.input}
-          placeholder="请输入城市"
-          onChangeText={newText => setText(newText)}
-          defaultValue={text}
-        />
-        <Button title="查询天气" onPress={getTianqi} />
         <View style={styles.tianqi}>
           {tianqi?.current && (
             <>
@@ -98,6 +112,14 @@ function HomeScreen() {
             </>
           )}
         </View>
+        <TextInput
+          style={styles.input}
+          placeholder="请输入城市"
+          onChangeText={newText => setText(newText)}
+          defaultValue={text}
+          onSubmitEditing={getTianqi}
+        />
+        <Button title="查询天气" onPress={getTianqi} />
       </KeyboardAvoidingView>
       {/* <Button
         onPress={() => {

@@ -20,5 +20,5 @@ export type VideoListParams = {
   size: number;
 };
 export function fetchGetMinVideo(data: VideoListParams) {
-  return get('https://api.apiopen.top/api/getMiniVideo', data);
+  return get('https://api.apiopen.top/api/getHaoKanVideo', data);
 }

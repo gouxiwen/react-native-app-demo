@@ -28,6 +28,7 @@ import AiImageScreen from './views/AiImage';
 import MinVideoScreen from './views/MinVideo';
 import VideoPlayerScreen from './views/VideoPlayer';
 import { VideoItemType } from '../global';
+import { primaryColor } from './common/const';
 
 //打印接口域名配置信息
 console.log(Config.FLAVOR, '=Config==config', Config);
@@ -117,10 +118,22 @@ const HomeBottomTabs = createBottomTabNavigator({
     //   fontSize: 16,
     //   fontFamily: 'Georgia',
     // },
+    tabBarActiveTintColor: primaryColor,
     tabBarShowLabel: false,
     headerTitleAlign: 'center',
   },
   screens: {
+    MinVideo: {
+      screen: MinVideoScreen,
+      options: {
+        title: '短视频',
+        tabBarIcon: ({ /* focused, */ color, size }) => {
+          return <AntDesign name="play-square" color={color} size={size} />;
+        },
+        headerShown: false,
+        // tabBarBadge: 0,
+      },
+    },
     Home: {
       screen: HomeScreen,
       options: {
@@ -139,16 +152,6 @@ const HomeBottomTabs = createBottomTabNavigator({
         tabBarIcon: ({ /* focused, */ color, size }) => (
           <AntDesign name="picture" color={color} size={size} />
         ),
-      },
-    },
-    MinVideo: {
-      screen: MinVideoScreen,
-      options: {
-        title: '短视频',
-        tabBarIcon: ({ /* focused, */ color, size }) => (
-          <AntDesign name="youtube" color={color} size={size} />
-        ),
-        // tabBarBadge: 0,
       },
     },
   },

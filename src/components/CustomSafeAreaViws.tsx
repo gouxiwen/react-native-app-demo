@@ -6,7 +6,19 @@
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-function CustomSafeAreaViws({ children }: { children: React.ReactNode }) {
+function CustomSafeAreaViws({
+  children,
+  top,
+  bottom,
+  left,
+  right,
+}: {
+  children: React.ReactNode;
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+}) {
   const insets = useSafeAreaInsets();
   return (
     <View
@@ -14,10 +26,10 @@ function CustomSafeAreaViws({ children }: { children: React.ReactNode }) {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        paddingLeft: insets.left,
-        paddingRight: insets.right,
+        paddingTop: top ?? insets.top,
+        paddingBottom: bottom ?? insets.bottom,
+        paddingLeft: left ?? insets.left,
+        paddingRight: right ?? insets.right,
       }}
     >
       {children}

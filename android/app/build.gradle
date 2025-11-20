@@ -109,9 +109,11 @@ android {
     }
     buildTypes {
         debug {
+            applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
         }
         release {
+            applicationIdSuffix ".release"
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             // signingConfig signingConfigs.debug
@@ -182,4 +184,5 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    implementation project(':react-native-fs')
 }
