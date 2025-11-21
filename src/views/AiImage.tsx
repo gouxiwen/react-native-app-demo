@@ -71,6 +71,12 @@ function AiImageScreen() {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Pressable
+              style={[styles.button]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>取消</Text>
+            </Pressable>
+            <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
                 downloadImage(imageUrl);
@@ -78,12 +84,6 @@ function AiImageScreen() {
               }}
             >
               <Text style={styles.textStyle}>保存</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>取消</Text>
             </Pressable>
           </View>
         </View>

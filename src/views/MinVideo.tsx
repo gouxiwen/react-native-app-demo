@@ -16,7 +16,7 @@ import {
 import { fetchGetMinVideo } from '../services/http';
 import FastImage from 'react-native-fast-image';
 import { CommonNavigationProps, VideoItemType } from '../../global';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Video from 'react-native-video';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import AntDesign from '@react-native-vector-icons/ant-design';
@@ -325,6 +325,24 @@ function MinVideoScreen() {
     getVideoList();
     Toast.showWithGravity('长按可以切换为列表模式哦~', Toast.LONG, Toast.TOP);
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Do something when the screen is focused
+      setState(pre => ({
+        ...pre,
+        isPause: false,
+      }));
+      return () => {
+        // Do something when the screen is unfocused
+        // Useful for cleanup functions
+        setState(pre => ({
+          ...pre,
+          isPause: true,
+        }));
+      };
+    }, []),
+  );
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
