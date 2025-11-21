@@ -3,7 +3,34 @@ import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import RNFS from 'react-native-fs';
 import Toast from 'react-native-simple-toast';
 
-async function hasAndroidPermission() {
+// 请求相机权限并提供原因
+export const requestCameraPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      {
+        title: '请求相机权限',
+        message: '我们需要您的相机权限来拍摄照片或视频',
+        buttonNeutral: '稍后询问',
+        buttonNegative: '取消',
+        buttonPositive: '确定',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('You can use the camera');
+      return true;
+    } else {
+      console.log('Camera permission denied');
+      return false;
+    }
+  } catch (err) {
+    console.warn(err);
+    return false;
+  }
+};
+
+// 检查媒体和外部存储权限
+export async function hasAndroidPermission() {
   const getCheckPermissionPromise = () => {
     if (+Platform.Version >= 33) {
       return Promise.all([
@@ -63,12 +90,16 @@ export async function savePicture(
 }
 
 /**
+ * CameraRoll只能保存本地资源，不能保存网络资源，所以需要由RNFS先下载到本地再保存到相册
  2  * 下载网页图片并保存到相册
  3  * @param uri  图片地址
  4  * @returns {*}
  5  */
-export const downloadImage = (uri?: string) => {
+export const downloadImage = async (uri?: string) => {
   if (!uri) return null;
+  if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
+    return;
+  }
   return new Promise((resolve, reject) => {
     let timestamp = new Date().getTime(); //获取当前时间错
     // eslint-disable-next-line no-bitwise
@@ -96,14 +127,15 @@ export const downloadImage = (uri?: string) => {
           // console.log('file://' + downloadDest)
           var promise = CameraRoll.saveAsset(downloadDest);
           promise
-            .then(function (result) {
+            .then(result => {
+              console.log('保存成功', result, downloadDest);
               Toast.showWithGravity(
-                '保存成功！地址如下：\n' + result,
+                '成功保存到：' + downloadDest,
                 Toast.LONG,
                 Toast.TOP,
               );
             })
-            .catch(function (error) {
+            .catch(error => {
               console.log('error', error);
               // alert('保存失败！\n' + error);
             });

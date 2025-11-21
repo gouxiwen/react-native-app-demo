@@ -402,6 +402,15 @@ function MinVideoScreen() {
         isPause: false,
         current: viewableItems[0].index as number,
       }));
+      if (viewableItems[0].index === data.length - 1) {
+        //如果当前页大于或等于总页数，那就是到最后一页了，返回
+        if (pageNo.current !== 1 && pageNo.current >= totalPage.current) {
+          return;
+        } else {
+          pageNo.current++;
+        }
+        getVideoList();
+      }
     }
   }
 

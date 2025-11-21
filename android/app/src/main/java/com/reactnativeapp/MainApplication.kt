@@ -8,8 +8,6 @@ import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 // import com.nativelocalstorage.NativeLocalStoragePackage
 // import com.webview.ReactWebViewPackage
-// import com.reactnativeapp.ConfigPackage;
-import com.rnfs.RNFSPackage;
 
 class MainApplication : Application(), ReactApplication {
 
@@ -22,9 +20,6 @@ class MainApplication : Application(), ReactApplication {
           // add(MyReactNativePackage())
           // add(NativeLocalStoragePackage())
           // add(ReactWebViewPackage())
-          // add(ConfigPackage())
-          new MainReactPackage(),
-          new RNFSPackage() 
         },
     )
   }

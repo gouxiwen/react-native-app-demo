@@ -80,6 +80,7 @@ aaptOptions.useNewCruncher = false
 ### 生成图标
 
 https://icon.wuruihong.com/
+https://icon.kitchen/i/H4sIAAAAAAAAA6tWKkvMKU0tVrKqVkpJLMoOyUjNTVWySkvMKU7VUUpLD6ksAHKVMnMT01OVQAK%2BicXZUPlaHaXc%2FJTSHJDuaKXEvJSi%2FMwUoKLM%2FGIgWZ6apBRbCwC9UKrUYAAAAA%3D%3D
 
 ## 网络请求调试
 
@@ -128,3 +129,20 @@ assembleDevRelease，assembleStagingRelease，assembleProdRelease 对应 build.g
 android/app/src 下的 main 为默认的构建类型，可以创建不同的文件夹，如 dev、staging、prod，分别对应不同的风味，可以继承 main 的配置后进行个性化配置
 
 安卓构建文档：https://developer.android.com/build/build-variants?hl=zh-cn#groovy
+
+## 依赖库配置记录
+
+react-native-fs 文档过时，不需要安卓文档进行手动配置，直接安装
+
+### IOS 待配置
+
+1. https://reactnavigation.org/docs/getting-started/
+2. https://github.com/react-native-config/react-native-config
+3. https://github.com/DylanVann/react-native-fast-image
+4. https://github.com/TheWidlarzGroup/react-native-video
+5. https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/#installation
+6. https://github.com/itinance/react-native-fs
+7. https://github.com/react-native-cameraroll/react-native-cameraroll
+8. https://www.npmjs.com/package/react-native-simple-toast
+9. https://www.npmjs.com/package/react-native-splash-screen
+10. https://docs.swmansion.com/react-native-worklets/docs/
