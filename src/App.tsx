@@ -29,6 +29,8 @@ import MinVideoScreen from './views/MinVideo';
 import VideoPlayerScreen from './views/VideoPlayer';
 import { VideoItemType } from '../global';
 import { primaryColor } from './common/const';
+import WeatherScreen from './views/Weather';
+import ExpressScreen from './views/Express';
 
 //打印接口域名配置信息
 console.log(Config.FLAVOR, '=Config==config', Config);
@@ -113,13 +115,17 @@ console.log(Config.FLAVOR, '=Config==config', Config);
 const HomeBottomTabs = createBottomTabNavigator({
   // tabBar: props => <MyTabBar {...props} />, // 自定义底部导航栏
   screenOptions: {
-    tabBarLabelPosition: 'beside-icon',
+    // tabBarLabelPosition: 'beside-icon',
     // tabBarLabelStyle: {
     //   fontSize: 16,
     //   fontFamily: 'Georgia',
     // },
+    tabBarStyle: {
+      backgroundColor: '#000',
+    },
     tabBarActiveTintColor: primaryColor,
-    tabBarShowLabel: false,
+    tabBarInactiveTintColor: '#fff',
+    // tabBarShowLabel: false,
     headerTitleAlign: 'center',
   },
   screens: {
@@ -137,11 +143,11 @@ const HomeBottomTabs = createBottomTabNavigator({
     Home: {
       screen: HomeScreen,
       options: {
-        title: '首页',
+        title: '查询',
         // headerTitle: props => <LogoTitle {...props} />,
         // headerRight: () => <Button>Update count</Button>,
         tabBarIcon: ({ /* focused, */ color, size }) => (
-          <AntDesign name="home" color={color} size={size} />
+          <AntDesign name="search" color={color} size={size} />
         ),
       },
     },
@@ -181,6 +187,18 @@ const RootStack = createNativeStackNavigator({
       screen: HomeBottomTabs,
       options: {
         headerShown: false,
+      },
+    },
+    Weather: {
+      screen: WeatherScreen,
+      options: {
+        title: '天气查询',
+      },
+    },
+    Express: {
+      screen: ExpressScreen,
+      options: {
+        title: '快递查询',
       },
     },
     VideoPlayer: {

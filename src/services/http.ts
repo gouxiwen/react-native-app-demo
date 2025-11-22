@@ -4,9 +4,13 @@ import { get } from './axios';
 // url      请求地址
 // function 请求方法
 
-// ---------->获取天气
-export function fetchGetTianqi(data: { city: string; type: string }) {
-  return get('http://shanhe.kim/api/za/tianqi.php', data);
+// ---------->查询天气
+export function fetchGetTianqi(data: { city: string; type?: string }) {
+  return get('http://shanhe.kim/api/za/tianqi.php', {city: data.city, type: data.type || 'json'});
+}
+// ---------->查询快递
+export function fetchGetKuaidi(data: { id: string; type?: string}) {
+  return get('http://shanhe.kim/api/za/kuaidi.php', {id: data.id, type: data.type || 'json'});
 }
 // ---------->随机ai绘制图
 export function fetchGetAiImg() {

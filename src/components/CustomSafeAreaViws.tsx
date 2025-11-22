@@ -24,8 +24,6 @@ function CustomSafeAreaViws({
     <View
       style={{
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         paddingTop: top ?? insets.top,
         paddingBottom: bottom ?? insets.bottom,
         paddingLeft: left ?? insets.left,

@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android --mode=DevDebug",
-    "android-staging": "SET ENVFILE=.env.staging && react-native  run-android --mode=StagingDebug",
+    "android-staging": "SET ENVFILE=.env.staging && react-native run-android --mode=StagingDebug",
+    "android-staging:mac": "ENVFILE=.env.staging && react-native run-android --mode=StagingDebug",
     "android-prod": "SET ENVFILE=.env.prod && react-native  run-android --mode=ProdDebug",
     "bundle-android-dev": "cd android && SET ENVFILE=.env.dev && ./gradlew assembleDevRelease",
+    "bundle-android-dev:mac": "cd android && ENVFILE=.env.dev && ./gradlew assembleDevRelease",
     "bundle-android-staging": "cd android && SET ENVFILE=.env.staging && ./gradlew assembleStagingRelease",
     "bundle-android-prod": "cd android && SET ENVFILE=.env.prod && ./gradlew assembleProdRelease",
     "bundle-android-aab-dev": "cd android && export ENVFILE=.env.dev ./gradlew bundleDevRelease",

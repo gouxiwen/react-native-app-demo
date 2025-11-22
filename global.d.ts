@@ -2,7 +2,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 declare global {}
 
-export type CommonNavigationProps = NativeStackNavigationProp<{
+export type RootStackParamList = {
   Home:
     | {
         post?: string;
@@ -27,7 +27,10 @@ export type CommonNavigationProps = NativeStackNavigationProp<{
       }
     | undefined;
   Help: undefined;
-}>;
+  Weather: undefined;
+  Express: undefined;
+}
+export type CommonNavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 declare module 'react-native-config' {
   export interface NativeConfig {

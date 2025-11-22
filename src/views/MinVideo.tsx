@@ -323,7 +323,9 @@ function MinVideoScreen() {
   }
   React.useEffect(() => {
     getVideoList();
-    Toast.showWithGravity('长按可以切换为列表模式哦~', Toast.LONG, Toast.TOP);
+    setTimeout(() => {
+      Toast.showWithGravity('长按可以切换为列表模式哦~', Toast.LONG, Toast.TOP);
+    }, 3000);
   }, []);
 
   useFocusEffect(

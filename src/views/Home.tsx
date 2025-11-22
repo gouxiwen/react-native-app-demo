@@ -1,14 +1,5 @@
 import * as React from 'react';
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 // import { useNavigation } from '@react-navigation/native';
 // import { Button } from '@react-navigation/elements';
 // import type { StaticScreenProps } from '@react-navigation/native';
@@ -16,6 +7,8 @@ import {
 import { fetchGetTianqi } from '../services/http';
 import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
 import { primaryColor } from '../common/const';
+import { useNavigation } from '@react-navigation/native';
+import { CommonNavigationProps, RootStackParamList } from '../../global';
 
 const defaultInfo = {
   current: {
@@ -26,7 +19,7 @@ const defaultInfo = {
 };
 function HomeScreen() {
   // function HomeScreen({ route }: StaticScreenProps<{ post: any }>) {
-  // const navigation = useNavigation<CommonNavigationProps>();
+  const navigation = useNavigation<CommonNavigationProps>();
 
   // Use an effect to monitor the update to params
   // React.useEffect(() => {
@@ -54,98 +47,38 @@ function HomeScreen() {
   //     ),
   //   });
   // }, [navigation]);
-  const [text, setText] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
-  const [tianqi, setTianqi] = React.useState<any>(defaultInfo);
-  const getTianqi = async () => {
-    setLoading(true);
-    const res = await fetchGetTianqi({
-      city: text || '深圳',
-      type: 'json',
-    });
-    setLoading(false);
-    if (res.data) setTianqi(res.data);
-    else setTianqi(defaultInfo);
-  };
-  React.useEffect(() => {
-    getTianqi();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (loading)
-    return (
-      <ActivityIndicator
-        style={{ flex: 1 }}
-        color={primaryColor}
-        size="large"
-      />
-    );
   return (
     <CustomSafeAreaViws>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}
-      >
-        <View style={styles.tianqi}>
-          {tianqi?.current && (
-            <>
-              <View style={styles.city}>
-                <Text style={styles.cityText}>{tianqi.current.city}</Text>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: 'column',
-                  marginBottom: 12,
-                }}
-              >
-                <View style={styles.info}>
-                  <Text style={styles.infoLabel}>天气</Text>
-                  <Text style={styles.infoText}>{tianqi.current.weather}</Text>
-                </View>
-
-                <View style={styles.info}>
-                  <Text style={styles.infoLabel}>温度</Text>
-                  <Text style={styles.infoText}>{tianqi.current.temp}</Text>
-                </View>
-              </View>
-            </>
-          )}
+      <View style={styles.container}>
+        <Text style={styles.title}>查询服务</Text>
+        <View style={styles.gridContainer}>
+          {[
+            {
+              id: 1,
+              name: '天气查询',
+              icon: '☀️',
+              color: '#FF9500',
+              route: 'Weather',
+            },
+            {
+              id: 2,
+              name: '快递查询',
+              icon: '📦',
+              color: '#007AFF',
+              route: 'Express',
+            },
+          ].map(item => (
+            <TouchableOpacity
+              key={item.id}
+              style={[styles.gridItem, { backgroundColor: item.color }]}
+              onPress={() => navigation.navigate(item.route as any)}
+            >
+              <Text style={styles.gridIcon}>{item.icon}</Text>
+              <Text style={styles.gridText}>{item.name}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
-        <TextInput
-          style={styles.input}
-          placeholder="请输入城市"
-          onChangeText={newText => setText(newText)}
-          defaultValue={text}
-          onSubmitEditing={getTianqi}
-        />
-        <Button title="查询天气" onPress={getTianqi} />
-      </KeyboardAvoidingView>
-      {/* <Button
-        onPress={() => {
-          navigation.navigate('Details', {
-            itemId: 86,
-            otherParam: 'anything you want here',
-          });
-        }}
-      >
-        Go to Details
-      </Button>
-      <Button onPress={() => navigation.navigate('CreatePost')}>
-        Create post
-      </Button>
-      <Text style={{ margin: 10 }}>Post: {route.params?.post}</Text>
-      <Button
-        onPress={() =>
-          navigation.navigate('Profile', {
-            name: 'John Doe',
-          })
-        }
-      >
-        Go to Profile
-      </Button>
-      <Text>{count}</Text>
-      <Button onPress={() => navigation.navigate('Help')}>Help</Button> */}
+      </View>
     </CustomSafeAreaViws>
   );
 }
@@ -153,17 +86,28 @@ function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#F5F5F5',
+    padding: 20,
   },
-  tianqi: {
-    width: '80%',
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 24,
-    marginHorizontal: 16,
-    marginVertical: 10,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#333',
+    textAlign: 'center',
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  gridItem: {
+    width: '48%',
+    height: 150,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -173,45 +117,14 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  city: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    paddingBottom: 12,
-    marginBottom: 12,
+  gridIcon: {
+    fontSize: 40,
+    marginBottom: 10,
   },
-  cityText: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#2c3e50',
-    textAlign: 'center',
-  },
-  info: {
-    alignItems: 'center',
-    paddingVertical: 20,
-    paddingHorizontal: 16,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  infoLabel: {
+  gridText: {
     fontSize: 16,
-    color: '#7f8c8d',
-    marginBottom: 8,
-  },
-  infoText: {
-    fontSize: 22,
-    color: '#3498db',
-    fontWeight: '500',
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    width: '80%',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginBottom: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
 
