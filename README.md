@@ -8,8 +8,26 @@ yarn start --reset-cache
 
 ## 安卓密钥
 
+1. 首先进入 jdk 目录
+2. 执行生成密钥命令
+3. 生成后复制到 android/app 目录下
+
+### Windows
+
 ```
 keytool -genkeypair -v -storetype PKCS12 -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+```
+
+正在为以下对象生成 2,048 位 RSA 密钥对和自签名证书 (SHA256withRSA) (有效期为 10,000 天):
+CN=xiwen, OU=test, O=test, L=test, ST=test, C=cn
+[正在存储 my-release-key.keystore]
+
+口令 123456
+
+### Mac
+
+```
+sudo keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 正在为以下对象生成 2,048 位 RSA 密钥对和自签名证书 (SHA256withRSA) (有效期为 10,000 天):
