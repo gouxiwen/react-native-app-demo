@@ -9,38 +9,38 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
-import { fetchGetKuaidi } from '../services/http';
+import { fetchGetYoujia } from '../services/http';
 import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
 import { primaryColor } from '../common/const';
 
 const defaultInfo = {
-  current: {
-    time: '--',
-    ftime: '--',
-    context: '--',
-  },
+  province: '--',
+  t0: '--',
+  t92: '--',
+  t95: '--',
+  t98: '--',
 };
-function ExpressScreen() {
+function OilPriceScreen() {
   const [text, setText] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [kuaidi, setKuaidi] = React.useState<any>(defaultInfo);
-  const getKuaidi = async () => {
+  const [youjia, setYoujia] = React.useState<any>(defaultInfo);
+  const getYoujia = async () => {
     if (!text) return;
     setLoading(true);
-    const res = await fetchGetKuaidi({
-      id: text,
+    const res = await fetchGetYoujia({
+      province: text,
     });
     setLoading(false);
     console.log(res);
     if ((res as any).code !== 1) {
-      Toast.showWithGravity((res as any).text, Toast.LONG, Toast.TOP);
+      Toast.showWithGravity((res as any).msg, Toast.LONG, Toast.TOP);
       return;
     }
-    if (res.data) setKuaidi(res.data);
-    else setKuaidi(defaultInfo);
+    if (res.data) setYoujia(res.data);
+    else setYoujia(defaultInfo);
   };
   React.useEffect(() => {
-    getKuaidi();
+    getYoujia();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -60,15 +60,18 @@ function ExpressScreen() {
       >
         <TextInput
           style={styles.input}
-          placeholder="请输入快递单号"
+          placeholder="请输入省份名称，如广东"
           onChangeText={newText => setText(newText)}
           defaultValue={text}
-          onSubmitEditing={getKuaidi}
+          onSubmitEditing={getYoujia}
           clearButtonMode="while-editing"
         />
-        <View style={styles.kuaidi}>
-          <Text style={styles.time}>更新时间：{kuaidi.current.time}</Text>
-          <Text style={styles.context}>当前位置：{kuaidi.current.context}</Text>
+        <View style={styles.youjia}>
+          <Text style={styles.context}>{youjia.province}今日油价:</Text>
+          <Text style={styles.time}>90号汽油：{youjia.t0}</Text>
+          <Text style={styles.time}>92号汽油：{youjia.t92}</Text>
+          <Text style={styles.time}>95号汽油：{youjia.t95}</Text>
+          <Text style={styles.time}>98号汽油：{youjia.t98}</Text>
         </View>
       </KeyboardAvoidingView>
     </CustomSafeAreaViws>
@@ -83,7 +86,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     padding: 16,
   },
-  kuaidi: {
+  youjia: {
     width: '80%',
     backgroundColor: primaryColor,
     borderRadius: 16,
@@ -111,6 +114,8 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     shadowColor: '#000',
+    fontWeight: '600',
+    marginBottom: 10,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -118,7 +123,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    color: primaryColor,
   },
 
   input: {
@@ -133,4 +137,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExpressScreen;
+export default OilPriceScreen;

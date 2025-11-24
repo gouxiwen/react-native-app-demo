@@ -81,14 +81,14 @@ android {
     namespace "com.reactnativeapp"
     // 定义默认配置，可以在productFlavors中重写
     defaultConfig {
-        // buildTypes和productFlavors中applicationIdSuffix基于这个值
+        // buildTypes和productFlavors中applicationIdSuffix基于这个值，如果使用了applicationIdSuffix，开发模式需要--appIdSuffix参数才能正确启动应用
         applicationId "com.reactnativeapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        // 构建不同类型或者风味的时候这个很重要
-        // 如applicationId不同与AndroidManifest.xml中<manifest package="...">或者使用applicationIdSuffix
+        // 在gradleResValues.xml中定义一个build_config_package的值，构建不同类型或者风味的时候这个很重要（目前还不清楚用途，是react-native-config文档提到）
+        // 如applicationId不同或者使用applicationIdSuffix
         resValue "string", "build_config_package", "com.reactnativeapp"
     }
     signingConfigs {

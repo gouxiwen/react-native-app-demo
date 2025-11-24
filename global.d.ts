@@ -29,8 +29,9 @@ export type RootStackParamList = {
   Help: undefined;
   Weather: undefined;
   Express: undefined;
-}
-export type CommonNavigationProps = NativeStackNavigationProp<RootStackParamList>;
+};
+export type CommonNavigationProps =
+  NativeStackNavigationProp<RootStackParamList>;
 
 declare module 'react-native-config' {
   export interface NativeConfig {

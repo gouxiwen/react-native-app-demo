@@ -1,7 +1,9 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'react-native';
-import VideoPlayer from 'react-native-media-console';
-import { useAnimations } from '@react-native-media-console/reanimated';
+// import { useAnimations } from '@react-native-media-console/reanimated';
+// import VideoPlayer from 'react-native-media-console'; // 不太好用，全屏有问题
+// @ts-ignore: no type declarations for 'react-native-video-controls'
+import VideoPlayer from 'react-native-video-controls';
 import { CommonNavigationProps, VideoItemType } from '../../global';
 
 function VideoPlayerScreen({ route }: StaticScreenProps<VideoItemType>) {
@@ -12,7 +14,7 @@ function VideoPlayerScreen({ route }: StaticScreenProps<VideoItemType>) {
       <StatusBar hidden={true} />
       <VideoPlayer
         source={{ uri: route.params.playUrl }}
-        useAnimations={useAnimations}
+        // useAnimations={useAnimations}
         navigator={navigation}
         repeat
         tapAnywhereToPause

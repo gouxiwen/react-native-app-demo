@@ -1,12 +1,12 @@
 {
-  "name": "reactNativeApp",
+  "name": "reactnativeapp",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android --mode=DevDebug",
-    "android-staging": "SET ENVFILE=.env.staging && react-native run-android --mode=StagingDebug",
-    "android-staging:mac": "ENVFILE=.env.staging && react-native run-android --mode=StagingDebug",
-    "android-prod": "SET ENVFILE=.env.prod && react-native  run-android --mode=ProdDebug",
+    "android": "react-native run-android --mode=DevDebug --appIdSuffix \"dev.debug\"",
+    "android-staging": "SET ENVFILE=.env.staging && react-native run-android --mode=StagingDebug --appIdSuffix \"staging.debug\"",
+    "android-staging:mac": "ENVFILE=.env.staging && react-native run-android --mode=StagingDebug --appIdSuffix \"staging.debug\"",
+    "android-prod": "SET ENVFILE=.env.prod && react-native  run-android --mode=ProdDebug --appIdSuffix \"prod.debug\"",
     "bundle-android-dev": "cd android && SET ENVFILE=.env.dev && ./gradlew assembleDevRelease",
     "bundle-android-dev:mac": "cd android && ENVFILE=.env.dev && ./gradlew assembleDevRelease",
     "bundle-android-staging": "cd android && SET ENVFILE=.env.staging && ./gradlew assembleStagingRelease",
@@ -40,8 +40,10 @@
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "^4.18.0",
     "react-native-simple-toast": "^3.3.2",
+    "react-native-sound": "^0.13.0",
     "react-native-splash-screen": "^3.3.0",
     "react-native-video": "^6.18.0",
+    "react-native-video-controls": "^2.8.1",
     "react-native-worklets": "^0.6.1"
   },
   "devDependencies": {

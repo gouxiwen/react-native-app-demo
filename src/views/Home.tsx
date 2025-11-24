@@ -4,19 +4,10 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 // import { Button } from '@react-navigation/elements';
 // import type { StaticScreenProps } from '@react-navigation/native';
 // import { CommonNavigationProps } from '../../global';
-import { fetchGetTianqi } from '../services/http';
 import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
-import { primaryColor } from '../common/const';
 import { useNavigation } from '@react-navigation/native';
-import { CommonNavigationProps, RootStackParamList } from '../../global';
+import { CommonNavigationProps } from '../../global';
 
-const defaultInfo = {
-  current: {
-    city: '--',
-    weather: '--',
-    temp: '--',
-  },
-};
 function HomeScreen() {
   // function HomeScreen({ route }: StaticScreenProps<{ post: any }>) {
   const navigation = useNavigation<CommonNavigationProps>();
@@ -50,7 +41,6 @@ function HomeScreen() {
   return (
     <CustomSafeAreaViws>
       <View style={styles.container}>
-        <Text style={styles.title}>查询服务</Text>
         <View style={styles.gridContainer}>
           {[
             {
@@ -66,6 +56,27 @@ function HomeScreen() {
               icon: '📦',
               color: '#007AFF',
               route: 'Express',
+            },
+            {
+              id: 3,
+              name: '油价查询',
+              icon: '⛽️',
+              color: '#34C759',
+              route: 'OilPrice',
+            },
+            {
+              id: 4,
+              name: '车价查询',
+              icon: '🚗',
+              color: '#FF3B30',
+              route: 'CarPrice',
+            },
+            {
+              id: 5,
+              name: '每日英语',
+              icon: '📚',
+              color: '#5856D6',
+              route: 'DailyEnglish',
             },
           ].map(item => (
             <TouchableOpacity
@@ -88,13 +99,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
     padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
-    textAlign: 'center',
   },
   gridContainer: {
     flexDirection: 'row',

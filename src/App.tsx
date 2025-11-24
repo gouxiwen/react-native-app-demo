@@ -31,6 +31,9 @@ import { VideoItemType } from '../global';
 import { primaryColor } from './common/const';
 import WeatherScreen from './views/Weather';
 import ExpressScreen from './views/Express';
+import OilPriceScreen from './views/OilPrice';
+import CarPriceScreen from './views/CarPrice';
+import DailyEnglishScreen from './views/DailyEnglish';
 
 //打印接口域名配置信息
 console.log(Config.FLAVOR, '=Config==config', Config);
@@ -143,11 +146,11 @@ const HomeBottomTabs = createBottomTabNavigator({
     Home: {
       screen: HomeScreen,
       options: {
-        title: '查询',
+        title: '工具',
         // headerTitle: props => <LogoTitle {...props} />,
         // headerRight: () => <Button>Update count</Button>,
         tabBarIcon: ({ /* focused, */ color, size }) => (
-          <AntDesign name="search" color={color} size={size} />
+          <AntDesign name="tool" color={color} size={size} />
         ),
       },
     },
@@ -199,6 +202,24 @@ const RootStack = createNativeStackNavigator({
       screen: ExpressScreen,
       options: {
         title: '快递查询',
+      },
+    },
+    OilPrice: {
+      screen: OilPriceScreen,
+      options: {
+        title: '油价查询',
+      },
+    },
+    CarPrice: {
+      screen: CarPriceScreen,
+      options: {
+        title: '车价查询',
+      },
+    },
+    DailyEnglish: {
+      screen: DailyEnglishScreen,
+      options: {
+        title: '每日英语',
       },
     },
     VideoPlayer: {
