@@ -15,22 +15,20 @@ import { fetchGetCarPrice } from '../services/http';
 import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
 import { primaryColor } from '../common/const';
 
-const defaultInfo: any[] = [
-  // {
-  //   brand_name: '小米汽车',
-  //   car_name: '2024款 后驱标准长续航版',
-  //   cover_url:
-  //     'http://p3-dcd.byteimg.com/tos-cn-i-dcdx/7a507b6ec14c4ead9c95c336893aa9d2~tplv-f042mdwyw7-original:640:0.png',
-  //   dealer_price: '21.59万',
-  //   price: '21.59万',
-  // },
-];
+type carPriceType = {
+  brand_name: string;
+  car_name: string;
+  cover_url: string;
+  dealer_price: string;
+  price: string;
+};
 function CarPriceScreen() {
   const [text, setText] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [carPrice, setCarPrice] = React.useState<any[]>(defaultInfo);
+  const [carPrice, setCarPrice] = React.useState<carPriceType[]>([]);
   const getCarPrice = async () => {
     if (!text) return;
+    setCarPrice([]);
     setLoading(true);
     const res = await fetchGetCarPrice(text);
     setLoading(false);
@@ -40,7 +38,6 @@ function CarPriceScreen() {
       return;
     }
     if (res.data) setCarPrice(res.data);
-    else setCarPrice(defaultInfo);
   };
   React.useEffect(() => {
     getCarPrice();

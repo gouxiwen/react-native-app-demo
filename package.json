@@ -21,6 +21,7 @@
     "clean:android": "cd android && ./gradlew clean"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-camera-roll/camera-roll": "^7.10.2",
     "@react-native-media-console/reanimated": "^2.2.4",
     "@react-native-vector-icons/ant-design": "^12.4.0",
@@ -36,12 +37,14 @@
     "react-native-fast-image": "^8.6.3",
     "react-native-fs": "^2.20.0",
     "react-native-media-console": "^2.2.4",
+    "react-native-pager-view": "^6.9.1",
     "react-native-reanimated": "^4.1.5",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "^4.18.0",
     "react-native-simple-toast": "^3.3.2",
     "react-native-sound": "^0.13.0",
     "react-native-splash-screen": "^3.3.0",
+    "react-native-tab-view": "^4.2.0",
     "react-native-video": "^6.18.0",
     "react-native-video-controls": "^2.8.1",
     "react-native-worklets": "^0.6.1"

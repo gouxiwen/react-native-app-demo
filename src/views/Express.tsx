@@ -26,6 +26,7 @@ function ExpressScreen() {
   const [kuaidi, setKuaidi] = React.useState<any>(defaultInfo);
   const getKuaidi = async () => {
     if (!text) return;
+    setKuaidi(defaultInfo);
     setLoading(true);
     const res = await fetchGetKuaidi({
       id: text,
@@ -37,7 +38,6 @@ function ExpressScreen() {
       return;
     }
     if (res.data) setKuaidi(res.data);
-    else setKuaidi(defaultInfo);
   };
   React.useEffect(() => {
     getKuaidi();

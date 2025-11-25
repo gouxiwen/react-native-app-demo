@@ -24,7 +24,7 @@ import ProfileScreen from './views/Profile';
 import SplashScreen from 'react-native-splash-screen';
 //要调用的配置文件写功能,如：app.tsx
 import Config from 'react-native-config';
-import AiImageScreen from './views/AiImage';
+import ImageScreen from './views/Image';
 import MinVideoScreen from './views/MinVideo';
 import VideoPlayerScreen from './views/VideoPlayer';
 import { VideoItemType } from '../global';
@@ -34,6 +34,7 @@ import ExpressScreen from './views/Express';
 import OilPriceScreen from './views/OilPrice';
 import CarPriceScreen from './views/CarPrice';
 import DailyEnglishScreen from './views/DailyEnglish';
+import YiyanPoetryScreen from './views/YiyanPoetry';
 
 //打印接口域名配置信息
 console.log(Config.FLAVOR, '=Config==config', Config);
@@ -125,6 +126,7 @@ const HomeBottomTabs = createBottomTabNavigator({
     // },
     tabBarStyle: {
       backgroundColor: '#000',
+      borderColor: '#000',
     },
     tabBarActiveTintColor: primaryColor,
     tabBarInactiveTintColor: '#fff',
@@ -155,9 +157,9 @@ const HomeBottomTabs = createBottomTabNavigator({
       },
     },
     AiImage: {
-      screen: AiImageScreen,
+      screen: ImageScreen,
       options: {
-        title: 'AI图片',
+        title: '图片',
         tabBarIcon: ({ /* focused, */ color, size }) => (
           <AntDesign name="picture" color={color} size={size} />
         ),
@@ -184,6 +186,7 @@ const RootStack = createNativeStackNavigator({
       fontWeight: 'bold',
     },
     headerTitleAlign: 'center',
+    animation: 'slide_from_right',
   },
   screens: {
     HomeBottom: {
@@ -220,6 +223,12 @@ const RootStack = createNativeStackNavigator({
       screen: DailyEnglishScreen,
       options: {
         title: '每日英语',
+      },
+    },
+    YiyanPoetry: {
+      screen: YiyanPoetryScreen,
+      options: {
+        title: '每日诗词',
       },
     },
     VideoPlayer: {

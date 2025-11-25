@@ -26,10 +26,29 @@ export function fetchGetYoujia(data: { province: string; type?: string }) {
   });
 }
 // ---------->随机ai绘制图
-export function fetchGetAiImg() {
-  return get('http://shanhe.kim/api/tu/aiv1.php', {
-    type: 'txt',
-  });
+export function fetchGetAiImg(type: string) {
+  if (type === 'ai') {
+    return get('http://shanhe.kim/api/tu/aiv1.php', {
+      type: 'txt',
+    });
+  } else if (type === 'head') {
+    return get('https://v2.xxapi.cn/api/head', {
+      return: 'json',
+    }).then(res => {
+      if ((res as any).code === 200) {
+        return (res as any).data;
+      }
+    });
+  } else if (type === 'wallpaper') {
+    return get('https://v2.xxapi.cn/api/random4kPic', {
+      type: 'wallpaper',
+      return: 'json',
+    }).then(res => {
+      if ((res as any).code === 200) {
+        return (res as any).data;
+      }
+    });
+  }
 }
 // ---------->获取短视频列表
 export type VideoListParams = {
@@ -53,4 +72,8 @@ export function fetchGetEnglishwords() {
 // ---------->图灵机器人
 export function fetchGetTuring(msg: string) {
   return get('https://v2.xxapi.cn/api/turing', { msg });
+}
+// ---------->随机一言/古诗词
+export function fetchGetYiyan(type: 'yiyan' | 'poetry' = 'poetry') {
+  return get('https://v2.xxapi.cn/api/yiyan', { type });
 }

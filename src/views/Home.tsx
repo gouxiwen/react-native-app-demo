@@ -78,6 +78,13 @@ function HomeScreen() {
               color: '#5856D6',
               route: 'DailyEnglish',
             },
+            {
+              id: 6,
+              name: '随机一言/古诗词',
+              icon: '📝',
+              color: '#AF52DE',
+              route: 'YiyanPoetry',
+            },
           ].map(item => (
             <TouchableOpacity
               key={item.id}

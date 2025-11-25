@@ -164,3 +164,5 @@ react-native-fs 文档过时，不需要安卓文档进行手动配置，直接�
 8. https://www.npmjs.com/package/react-native-simple-toast
 9. https://www.npmjs.com/package/react-native-splash-screen
 10. https://docs.swmansion.com/react-native-worklets/docs/
+11. https://react-native-async-storage.github.io/2.0/Installation/
+12. https://reactnavigation.org/docs/tab-view

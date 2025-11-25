@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Button,
   Modal,
   Pressable,
   StyleSheet,
@@ -11,23 +10,26 @@ import {
   View,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import { useWindowDimensions } from 'react-native';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import { fetchGetAiImg } from '../services/http';
 import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
 import { primaryColor } from '../common/const';
 import { downloadImage } from '../common/camera';
 
-function AiImageScreen() {
+function AiImageScreen({ type = 'ai' }: { type?: string }) {
   const [imageUrl, setImageUrl] = React.useState<string>();
   const [loading, setLoading] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const getImageUrl = async () => {
     setLoading(true);
-    const res: any = await fetchGetAiImg();
+    const res: any = await fetchGetAiImg(type);
     setLoading(false);
     setImageUrl(res);
   };
   React.useEffect(() => {
     getImageUrl();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const downImage = () => {
@@ -70,26 +72,33 @@ function AiImageScreen() {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Pressable
-              style={[styles.button]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>取消</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => {
-                downloadImage(imageUrl);
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <Text style={styles.textStyle}>保存</Text>
-            </Pressable>
+            <Text style={styles.modalText}>保存图片到相册</Text>
+            <View style={styles.buttonWrap}>
+              <Pressable
+                style={[styles.button]}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.textStyle}>取消</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonConfirm]}
+                onPress={() => {
+                  downloadImage(imageUrl);
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <Text style={styles.textStyle}>保存</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
       </Modal>
       <TouchableWithoutFeedback
-        onLongPress={() => setModalVisible(!modalVisible)}
+        onLongPress={() => {
+          console.log('long');
+
+          setModalVisible(!modalVisible);
+        }}
       >
         <FastImage
           style={styles.image}
@@ -97,20 +106,53 @@ function AiImageScreen() {
           resizeMode={FastImage.resizeMode.contain}
         />
       </TouchableWithoutFeedback>
-      <View
-        style={{
-          marginTop: 20,
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          gap: 20,
-        }}
-      >
-        <Button title="更新图片" onPress={getImageUrl} />
-        <Button title="保存图片" onPress={downImage} />
+      <View style={styles.centeredView}>
+        <View style={styles.buttonWrap}>
+          <Pressable
+            style={[styles.button, styles.buttonConfirm]}
+            onPress={getImageUrl}
+          >
+            <Text style={styles.textStyle}>更新图片</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonConfirm]}
+            onPress={downImage}
+          >
+            <Text style={styles.textStyle}>保存图片</Text>
+          </Pressable>
+        </View>
       </View>
     </CustomSafeAreaViws>
   );
 }
+
+const renderScene = SceneMap({
+  AiImageScreen: () => <AiImageScreen />,
+  HeadImageScreen: () => <AiImageScreen type="head" />,
+  WallPaperImageScreen: () => <AiImageScreen type="wallpaper" />,
+});
+
+const routes = [
+  { key: 'AiImageScreen', title: 'AI图片' },
+  { key: 'HeadImageScreen', title: '头像' },
+  { key: 'WallPaperImageScreen', title: '壁纸' },
+];
+
+function ImageScreen() {
+  const layout = useWindowDimensions();
+  const [index, setIndex] = React.useState(0);
+
+  return (
+    <TabView
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{ width: layout.width }}
+    />
+  );
+}
+
+export default ImageScreen;
 
 const styles = StyleSheet.create({
   image: {
@@ -122,11 +164,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
   modalView: {
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 16,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -136,6 +184,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  buttonWrap: {
     flexDirection: 'row',
     gap: 20,
   },
@@ -145,7 +195,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     width: 100,
   },
-  buttonClose: {
+  buttonConfirm: {
     backgroundColor: '#2196F3',
   },
   textStyle: {
@@ -154,5 +204,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-export default AiImageScreen;

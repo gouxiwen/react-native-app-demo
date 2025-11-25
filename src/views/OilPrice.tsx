@@ -26,6 +26,7 @@ function OilPriceScreen() {
   const [youjia, setYoujia] = React.useState<any>(defaultInfo);
   const getYoujia = async () => {
     if (!text) return;
+    setYoujia(defaultInfo);
     setLoading(true);
     const res = await fetchGetYoujia({
       province: text,
@@ -37,7 +38,6 @@ function OilPriceScreen() {
       return;
     }
     if (res.data) setYoujia(res.data);
-    else setYoujia(defaultInfo);
   };
   React.useEffect(() => {
     getYoujia();

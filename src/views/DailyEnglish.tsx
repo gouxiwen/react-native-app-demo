@@ -3,127 +3,73 @@ import {
   View,
   Text,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
   ActivityIndicator,
   TouchableOpacity,
   Linking,
+  ScrollView,
+  Alert,
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
+import Sound from 'react-native-sound';
 import { fetchGetEnglishwords } from '../services/http';
 import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
-import { primaryColor } from '../common/const';
+import { primaryColor, rememberedWordKey } from '../common/const';
+import { removeData, getData, storeData } from '../common/utils';
 
-const defaultInfo = {
-  bookId: '',
-  phrases: [
-    {
-      p_cn: '自然对流',
-      p_content: 'natural convection',
-    },
-    {
-      p_cn: '对流传热',
-      p_content: 'convection heat transfer',
-    },
-    {
-      p_cn: '强制对流；人工对流',
-      p_content: 'forced convection',
-    },
-    {
-      p_cn: '热对流',
-      p_content: 'heat convection',
-    },
-    {
-      p_cn: '[工]对流部分',
-      p_content: 'convection section',
-    },
-    {
-      p_cn: '地函对流，地幔对流；地幔对流',
-      p_content: 'mantle convection',
-    },
-    {
-      p_cn: '对俩散',
-      p_content: 'convection diffusion',
-    },
-    {
-      p_cn: '对流系数，膜层散热系数',
-      p_content: 'convection coefficient',
-    },
-    {
-      p_cn: '对流区（等于convective zone）',
-      p_content: 'convection zone',
-    },
-  ],
-  relWords: [
-    {
-      Hwds: [
-        {
-          hwd: 'convector',
-          tran: ' 对流式暖房器；对流散热器；[建] 换流器',
-        },
-      ],
-      Pos: 'n',
-    },
-    {
-      Hwds: [
-        {
-          hwd: 'convect',
-          tran: ' 对流传热',
-        },
-      ],
-      Pos: 'vi',
-    },
-    {
-      Hwds: [
-        {
-          hwd: 'convect',
-          tran: ' 使热空气对流',
-        },
-      ],
-      Pos: 'vt',
-    },
-  ],
-  sentences: [
-    {
-      s_cn: '...云层通过对流把温暖湿润的空气送到高的大气层中。',
-      s_content:
-        '...clouds which lift warm, moist air by convection high into the atmosphere.',
-    },
-  ],
-  synonyms: [
-    {
-      Hwds: [
-        {
-          word: 'transmission',
-        },
-        {
-          word: 'convective flow',
-        },
-      ],
-      pos: 'n',
-      tran: '[流][气象]对流；传送',
-    },
-  ],
-  translations: [
-    {
-      pos: 'n',
-      tran_cn: '[流][气象] 对流；传送',
-    },
-  ],
-  ukphone: "kən'vekʃ(ə)n",
-  ukspeech: 'https://dict.youdao.com/dictvoice?audio=convection&type=1',
-  usphone: "kən'vɛkʃən",
-  usspeech: 'https://dict.youdao.com/dictvoice?audio=convection&type=2',
-  word: 'convection',
+type englishwordsType = {
+  bookId: string;
+  phrases: {
+    p_cn: string;
+    p_content: string;
+  }[];
+  relWords: {
+    Hwds: {
+      hwd: string;
+      tran: string;
+    }[];
+    Pos: string;
+  }[];
+  sentences: {
+    s_cn: string;
+    s_content: string;
+  }[];
+  synonyms: {
+    Hwds: {
+      word: string;
+    }[];
+    pos: string;
+    tran: string;
+  }[];
+  translations: {
+    pos: string;
+    tran_cn: string;
+  }[];
+  ukphone: string;
+  ukspeech: string;
+  usphone: string;
+  usspeech: string;
+  word: string;
 };
-function DailyEnglishScreen() {
-  const [loading, setLoading] = React.useState(false);
-  const [englishwords, setEnglishwords] = React.useState<any>(defaultInfo);
-  const soundRef = React.useRef<any>(null);
+
+function CardHeader({
+  englishwords,
+}: {
+  englishwords: englishwordsType | null;
+}) {
   const [isPlaying, setIsPlaying] = React.useState(false);
-  const [isLoadingAudio, setIsLoadingAudio] = React.useState(false);
   const [loadingUrl, setLoadingUrl] = React.useState<string | null>(null);
   const [currentUrl, setCurrentUrl] = React.useState<string | null>(null);
+  const soundRef = React.useRef<Sound | null>(null);
+  React.useEffect(() => {
+    return () => {
+      if (soundRef.current) {
+        try {
+          soundRef.current.release();
+        } catch {}
+        soundRef.current = null;
+      }
+    };
+  }, []);
 
   const playAudio = (url?: string) => {
     if (!url) return;
@@ -136,7 +82,7 @@ function DailyEnglishScreen() {
         } else {
           soundRef.current.play(() => {
             try {
-              soundRef.current.release();
+              soundRef.current?.release();
             } catch {}
             setIsPlaying(false);
             setCurrentUrl(null);
@@ -151,14 +97,8 @@ function DailyEnglishScreen() {
 
     // different url: release previous and play new
     try {
-      setIsLoadingAudio(true);
       setLoadingUrl(url || null);
-      // @ts-ignore
-      const RNSoundModule = require('react-native-sound');
-      // @ts-ignore
-      const RNSound = RNSoundModule && (RNSoundModule.default || RNSoundModule);
-      if (!RNSound) {
-        setIsLoadingAudio(false);
+      if (!Sound) {
         Linking.openURL(url);
         return;
       }
@@ -168,8 +108,7 @@ function DailyEnglishScreen() {
         } catch {}
         soundRef.current = null;
       }
-      const sound = new RNSound(url, '', (err: any) => {
-        setIsLoadingAudio(false);
+      const sound = new Sound(url, '', (err: any) => {
         setLoadingUrl(null);
         if (err) {
           Linking.openURL(url);
@@ -188,23 +127,65 @@ function DailyEnglishScreen() {
         });
       });
     } catch {
-      setIsLoadingAudio(false);
       setLoadingUrl(null);
       Linking.openURL(url);
     }
   };
+  return (
+    <>
+      <View style={styles.cardHeader}>
+        <Text style={styles.wordTitle}>{englishwords?.word ?? '--'}</Text>
+      </View>
+      <View style={styles.phonetics}>
+        {englishwords?.ukphone && (
+          <>
+            <Text style={styles.phoneticText}>
+              {englishwords?.ukphone ?? ''}
+            </Text>
+            <TouchableOpacity
+              onPress={() => playAudio(englishwords?.ukspeech)}
+              style={styles.playBtn}
+            >
+              {loadingUrl === englishwords?.ukspeech ? (
+                <ActivityIndicator size="small" color={primaryColor} />
+              ) : isPlaying && currentUrl === englishwords?.ukspeech ? (
+                <Text style={styles.playText}>■</Text>
+              ) : (
+                <Text style={styles.playText}>▶</Text>
+              )}
+            </TouchableOpacity>
+          </>
+        )}
+        {englishwords?.usphone && (
+          <>
+            <Text style={[styles.phoneticText, { marginLeft: 8 }]}>
+              {englishwords?.usphone ?? ''}
+            </Text>
+            <TouchableOpacity
+              onPress={() => playAudio(englishwords?.usspeech)}
+              style={[styles.playBtn, { marginLeft: 6 }]}
+            >
+              {loadingUrl === englishwords?.usspeech ? (
+                <ActivityIndicator size="small" color={primaryColor} />
+              ) : isPlaying && currentUrl === englishwords?.usspeech ? (
+                <Text style={styles.playText}>■</Text>
+              ) : (
+                <Text style={styles.playText}>▶</Text>
+              )}
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+    </>
+  );
+}
+function DailyEnglishScreen() {
+  const [loading, setLoading] = React.useState(false);
+  const [englishwords, setEnglishwords] =
+    React.useState<englishwordsType | null>(null);
 
-  React.useEffect(() => {
-    return () => {
-      if (soundRef.current) {
-        try {
-          soundRef.current.release();
-        } catch {}
-        soundRef.current = null;
-      }
-    };
-  }, []);
   const getEnglishwords = async () => {
+    setEnglishwords(null);
     setLoading(true);
     const res = await fetchGetEnglishwords();
     setLoading(false);
@@ -214,13 +195,62 @@ function DailyEnglishScreen() {
       return;
     }
     if (res.data) setEnglishwords(res.data);
-    else setEnglishwords(defaultInfo);
   };
+
+  const rememberWord = async () => {
+    if (!englishwords) return;
+    const rememberedWordsMap = ((await getData(rememberedWordKey)) ||
+      {}) as Record<string, englishwordsType>;
+    if (rememberedWordsMap[englishwords.word]) return;
+    rememberedWordsMap[englishwords.word] = englishwords;
+    await storeData(rememberedWordKey, rememberedWordsMap);
+  };
+
+  const removeRememberedWord = async (word: string) => {
+    const rememberedWordsMap = ((await getData(rememberedWordKey)) ||
+      {}) as Record<string, englishwordsType>;
+    if (rememberedWordsMap[word]) {
+      delete rememberedWordsMap[word];
+      await storeData(rememberedWordKey, rememberedWordsMap);
+      setRememberedWords(rememberedWordsMap);
+      Toast.showWithGravity('已移除', Toast.SHORT, Toast.BOTTOM);
+    }
+  };
+  const removeAllRememberedWord = async () => {
+    Alert.alert('确认清空已学单词吗？', '', [
+      {
+        text: '取消',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {
+        text: '确定',
+        onPress: async () => {
+          setLoading(true);
+          await removeData(rememberedWordKey);
+          setRememberedWords({});
+          setLoading(false);
+          Toast.showWithGravity('已清空', Toast.SHORT, Toast.BOTTOM);
+        },
+      },
+    ]);
+  };
+
+  const [rememberedWords, setRememberedWords] = React.useState<
+    Record<string, englishwordsType>
+  >({});
+  const getRememberedWords = async () => {
+    const rememberedWordsMap = ((await getData(rememberedWordKey)) ||
+      {}) as Record<string, englishwordsType>;
+    setRememberedWords(rememberedWordsMap);
+  };
+
   React.useEffect(() => {
     getEnglishwords();
+    getRememberedWords();
   }, []);
 
-  if (loading || isLoadingAudio)
+  if (loading)
     return (
       <ActivityIndicator
         style={{ flex: 1 }}
@@ -228,119 +258,119 @@ function DailyEnglishScreen() {
         size="large"
       />
     );
+
   return (
     <CustomSafeAreaViws>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}
-      >
-        <View style={styles.englishwords}>
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.wordTitle}>{englishwords?.word ?? '--'}</Text>
+      <View style={styles.englishwords}>
+        <View style={styles.card}>
+          <CardHeader englishwords={englishwords} />
+          {englishwords?.translations?.length
+            ? englishwords.translations.map((t: any, idx: number) => (
+                <Text key={idx} style={styles.translation}>{`${t.pos || ''} ${
+                  t.tran_cn || ''
+                }`}</Text>
+              ))
+            : null}
+
+          {englishwords?.phrases?.length ? (
+            <View style={styles.phrases}>
+              {englishwords.phrases.slice(0, 3).map((p: any, i: number) => (
+                <View key={i} style={styles.phraseRow}>
+                  <Text style={styles.phraseCn}>{p.p_cn}</Text>
+                  <Text style={styles.phraseEn}>{p.p_content}</Text>
+                </View>
+              ))}
             </View>
-            <View style={styles.phonetics}>
-              <Text style={styles.phoneticText}>
-                {englishwords?.ukphone ?? ''}
+          ) : null}
+
+          {englishwords?.sentences?.length ? (
+            <View style={styles.sentenceBox}>
+              <Text style={styles.sentenceEn}>
+                {englishwords.sentences[0]?.s_content}
               </Text>
-              <TouchableOpacity
-                onPress={() => playAudio(englishwords?.ukspeech)}
-                style={styles.playBtn}
-              >
-                {loadingUrl === englishwords?.ukspeech ? (
-                  <ActivityIndicator size="small" color={primaryColor} />
-                ) : isPlaying && currentUrl === englishwords?.ukspeech ? (
-                  <Text style={styles.playText}>■</Text>
-                ) : (
-                  <Text style={styles.playText}>▶</Text>
-                )}
-              </TouchableOpacity>
-              <Text style={[styles.phoneticText, { marginLeft: 8 }]}>
-                {englishwords?.usphone ?? ''}
+              <Text style={styles.sentenceCn}>
+                {englishwords.sentences[0]?.s_cn}
               </Text>
-              <TouchableOpacity
-                onPress={() => playAudio(englishwords?.usspeech)}
-                style={[styles.playBtn, { marginLeft: 6 }]}
-              >
-                {loadingUrl === englishwords?.usspeech ? (
-                  <ActivityIndicator size="small" color={primaryColor} />
-                ) : isPlaying && currentUrl === englishwords?.usspeech ? (
-                  <Text style={styles.playText}>■</Text>
-                ) : (
-                  <Text style={styles.playText}>▶</Text>
-                )}
-              </TouchableOpacity>
             </View>
-
-            {englishwords?.translations?.length
-              ? englishwords.translations.map((t: any, idx: number) => (
-                  <Text key={idx} style={styles.translation}>{`${t.pos || ''} ${
-                    t.tran_cn || ''
-                  }`}</Text>
-                ))
-              : null}
-
-            {englishwords?.phrases?.length ? (
-              <View style={styles.phrases}>
-                {englishwords.phrases.slice(0, 3).map((p: any, i: number) => (
-                  <View key={i} style={styles.phraseRow}>
-                    <Text style={styles.phraseCn}>{p.p_cn}</Text>
-                    <Text style={styles.phraseEn}>{p.p_content}</Text>
-                  </View>
-                ))}
-              </View>
-            ) : null}
-
-            {englishwords?.sentences?.length ? (
-              <View style={styles.sentenceBox}>
-                <Text style={styles.sentenceEn}>
-                  {englishwords.sentences[0]?.s_content}
-                </Text>
-                <Text style={styles.sentenceCn}>
-                  {englishwords.sentences[0]?.s_cn}
-                </Text>
-              </View>
-            ) : null}
-
-            <View style={styles.cardFooter}>
+          ) : null}
+          <View style={styles.cardFooter}>
+            <TouchableOpacity
+              style={styles.nextBtn}
+              activeOpacity={0.8}
+              onPress={getEnglishwords}
+            >
+              <Text style={styles.nextText}>下一词</Text>
+            </TouchableOpacity>
+            {englishwords?.word && !rememberedWords[englishwords.word] && (
               <TouchableOpacity
                 style={styles.rememberBtn}
                 activeOpacity={0.8}
-                onPress={() =>
+                onPress={async () => {
+                  await rememberWord();
                   Toast.showWithGravity(
                     '已标记为已学',
                     Toast.SHORT,
                     Toast.BOTTOM,
-                  )
-                }
+                  );
+                  getRememberedWords();
+                }}
               >
                 <Text style={styles.rememberText}>记住</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.nextBtn}
-                activeOpacity={0.8}
-                onPress={getEnglishwords}
-              >
-                <Text style={styles.nextText}>下一词</Text>
-              </TouchableOpacity>
-            </View>
+            )}
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
+      <View style={styles.listWrap}>
+        <View style={styles.listHeader}>
+          <Text style={[styles.title]}>
+            已学单词（{Object.keys(rememberedWords).length}）
+          </Text>
+          {Object.keys(rememberedWords).length > 0 && (
+            <TouchableOpacity
+              style={styles.removeBtn}
+              onPress={() => removeAllRememberedWord()}
+            >
+              <Text style={styles.removeText}>清空</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        {Object.keys(rememberedWords).length > 0 ? (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.list}
+          >
+            {Object.values(rememberedWords)
+              .reverse()
+              .map(w => (
+                <View key={w.word} style={styles.rememberedCard}>
+                  <Text style={styles.rememberedWordTitle}>{w.word}</Text>
+                  <CardHeader englishwords={w} />
+                  <Text style={styles.rememberedMeta} numberOfLines={1}>
+                    {w.translations && w.translations[0]
+                      ? w.translations[0].tran_cn
+                      : ''}
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.removeBtn}
+                    onPress={() => removeRememberedWord(w.word)}
+                  >
+                    <Text style={styles.removeText}>移除</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+          </ScrollView>
+        ) : (
+          <Text style={{ color: '#9aa4b2', marginLeft: 12 }}>暂无已学单词</Text>
+        )}
+      </View>
     </CustomSafeAreaViws>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // width: '100%',
-    alignItems: 'center',
-    // justifyContent: 'center',
-    padding: 16,
-  },
   englishwords: {
-    width: '90%',
     backgroundColor: primaryColor,
     borderRadius: 16,
     padding: 24,
@@ -355,11 +385,16 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  time: {
+  listHeader: {
     backgroundColor: '#F0F5FF',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 12,
     borderRadius: 8,
     marginBottom: 10,
+  },
+  title: {
     color: primaryColor,
   },
   context: {
@@ -499,6 +534,50 @@ const styles = StyleSheet.create({
     color: '#7a8692',
     fontSize: 13,
     marginTop: 6,
+  },
+  listWrap: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    paddingHorizontal: 8,
+  },
+  list: {
+    paddingVertical: 6,
+    alignItems: 'center',
+  },
+  rememberedCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 12,
+    marginRight: 12,
+    minWidth: 140,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  rememberedWordTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0b2130',
+    marginBottom: 6,
+  },
+  rememberedMeta: {
+    fontSize: 12,
+    color: '#6b7a86',
+    marginBottom: 8,
+  },
+  removeBtn: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#FFF5F5',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  removeText: {
+    color: '#d94a4a',
+    fontSize: 12,
+    fontWeight: '600',
   },
 });
 

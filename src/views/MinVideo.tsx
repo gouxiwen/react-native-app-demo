@@ -92,6 +92,14 @@ function VideoItemFullScreen({
   onPress: (event: GestureResponderEvent) => void;
   onLongPress: (event: GestureResponderEvent) => void;
 }) {
+  const handlePause = (event: GestureResponderEvent) => {
+    Toast.showWithGravity(
+      '长按右侧按钮可以切换为列表模式哦~',
+      Toast.LONG,
+      Toast.TOP,
+    );
+    onPress(event);
+  };
   return (
     <View
       style={{
@@ -107,9 +115,10 @@ function VideoItemFullScreen({
           paused={index === state.current ? state.isPause : true}
           resizeMode="contain"
           onPlay={onPress}
-          onPause={onPress}
-          onShowControls={onPress}
+          onShowControls={handlePause}
           showOnStart={false}
+          showBackButton={false}
+          showFullscreenButton={false}
           tapAnywhereToPause
           disablePlayPause
           controlTimeout={2000}
@@ -129,7 +138,7 @@ function VideoItemFullScreen({
             }}
           >
             {state.isPause ? (
-              <AntDesign name="switcher" color={primaryColor} size={30} />
+              <AntDesign name="bars" color={primaryColor} size={30} />
             ) : (
               ''
             )}
@@ -200,6 +209,7 @@ function MinVideoScreen() {
   const height = screenHeight - tabBarHeight;
   const [refreshing, setRefreshing] = React.useState(false);
   const [listMode, setListMode] = React.useState(false);
+  const [isFocused, setIsFocused] = React.useState(false);
   const pageSize = 20;
   const pageNo = React.useRef(0);
   const totalPage = React.useRef(0);
@@ -229,13 +239,6 @@ function MinVideoScreen() {
   }
   React.useEffect(() => {
     getVideoList();
-    setTimeout(() => {
-      Toast.showWithGravity(
-        '长按右上角可以切换为列表模式哦~',
-        Toast.LONG,
-        Toast.TOP,
-      );
-    }, 3000);
   }, []);
 
   useFocusEffect(
@@ -245,6 +248,7 @@ function MinVideoScreen() {
         ...pre,
         isPause: false,
       }));
+      setIsFocused(true);
       return () => {
         // Do something when the screen is unfocused
         // Useful for cleanup functions
@@ -252,6 +256,7 @@ function MinVideoScreen() {
           ...pre,
           isPause: true,
         }));
+        setIsFocused(false);
       };
     }, []),
   );
@@ -375,7 +380,13 @@ function MinVideoScreen() {
   }
   return (
     <>
-      <StatusBar hidden={true} />
+      {isFocused && (
+        <StatusBar
+          backgroundColor="transparent"
+          barStyle="light-content"
+          translucent
+        />
+      )}
       <FlatList
         contentContainerStyle={{}}
         refreshControl={
