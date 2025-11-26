@@ -1,4 +1,4 @@
-## 启动
+## 单独启动开发服务
 
 如果使用多线程插件 react-native-worklets，推荐清除 Metro 打包器缓存在启动服务
 
@@ -6,13 +6,23 @@
 yarn start --reset-cache
 ```
 
-## 安卓密钥
+真机调试时，需要使用 adb 工具，将手机连接到电脑，并开启开发者选项中的 USB 调试，然后重连 tcp
+
+```
+adb reverse tcp:8081 tcp:8081
+```
+
+## 打包到真机
+
+### 安卓
+
+Android 要求所有应用在安装之前都必须使用证书进行数字签名。为了通过 谷歌应用商店 分发你的 Android 应用，需要使用发布密钥进行签名，然后该发布密钥需要用于所有未来的更新
 
 1. 首先进入 jdk 目录
 2. 执行生成密钥命令
 3. 生成后复制到 android/app 目录下
 
-### Windows
+#### Windows
 
 ```
 keytool -genkeypair -v -storetype PKCS12 -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
@@ -24,7 +34,7 @@ CN=xiwen, OU=test, O=test, L=test, ST=test, C=cn
 
 口令 123456
 
-### Mac
+#### Mac
 
 ```
 sudo keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
@@ -36,11 +46,21 @@ CN=xiwen, OU=test, O=test, L=test, ST=test, C=cn
 
 口令 123456
 
-## 打包到真机
+### 官方基础配置
 
 ```
 npm run android -- --mode="release"
 ```
+
+### 自定义多风格配置后
+
+```
+bundle-android-dev
+bundle-android-release
+...
+```
+
+## 编译原生模块或组件
 
 <!-- 目前发现原生模块和原生组件只能选一个进行编译 -->
 

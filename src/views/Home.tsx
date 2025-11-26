@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 // import { useNavigation } from '@react-navigation/native';
 // import { Button } from '@react-navigation/elements';
 // import type { StaticScreenProps } from '@react-navigation/native';
@@ -40,7 +46,7 @@ function HomeScreen() {
   // }, [navigation]);
   return (
     <CustomSafeAreaViws>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={styles.gridContainer}>
           {[
             {
@@ -85,6 +91,13 @@ function HomeScreen() {
               color: '#AF52DE',
               route: 'YiyanPoetry',
             },
+            {
+              id: 7,
+              name: '图灵机器人',
+              icon: '🤖',
+              color: '#FF9500',
+              route: 'TuringChat',
+            },
           ].map(item => (
             <TouchableOpacity
               key={item.id}
@@ -96,7 +109,7 @@ function HomeScreen() {
             </TouchableOpacity>
           ))}
         </View>
-      </View>
+      </ScrollView>
     </CustomSafeAreaViws>
   );
 }
@@ -105,12 +118,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
-    padding: 20,
+    // padding: 16,
   },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    padding: 16,
   },
   gridItem: {
     width: '48%',

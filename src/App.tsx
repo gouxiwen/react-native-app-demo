@@ -35,6 +35,7 @@ import OilPriceScreen from './views/OilPrice';
 import CarPriceScreen from './views/CarPrice';
 import DailyEnglishScreen from './views/DailyEnglish';
 import YiyanPoetryScreen from './views/YiyanPoetry';
+import TuringChatScreen from './views/TuringChat';
 
 //打印接口域名配置信息
 console.log(Config.FLAVOR, '=Config==config', Config);
@@ -228,7 +229,13 @@ const RootStack = createNativeStackNavigator({
     YiyanPoetry: {
       screen: YiyanPoetryScreen,
       options: {
-        title: '每日诗词',
+        title: '每日诗词/一言',
+      },
+    },
+    TuringChat: {
+      screen: TuringChatScreen,
+      options: {
+        title: '图灵机器人',
       },
     },
     VideoPlayer: {

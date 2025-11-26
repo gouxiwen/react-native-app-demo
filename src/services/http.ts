@@ -74,6 +74,6 @@ export function fetchGetTuring(msg: string) {
   return get('https://v2.xxapi.cn/api/turing', { msg });
 }
 // ---------->随机一言/古诗词
-export function fetchGetYiyan(type: 'yiyan' | 'poetry' = 'poetry') {
+export function fetchGetYiyan(type: 'hitokoto' | 'poetry' = 'poetry') {
   return get('https://v2.xxapi.cn/api/yiyan', { type });
 }
