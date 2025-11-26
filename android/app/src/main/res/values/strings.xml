@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">testApp</string>
-    <string name="app_name_dev">testApp_dev</string>
-    <string name="app_name_staging">testApp_staging</string>
+    <string name="app_name">百宝箱</string>
+    <string name="app_name_dev">百宝箱-开发版</string>
+    <string name="app_name_staging">百宝箱-测试版</string>
 </resources>
