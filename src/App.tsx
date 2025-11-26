@@ -235,7 +235,7 @@ const RootStack = createNativeStackNavigator({
     TuringChat: {
       screen: TuringChatScreen,
       options: {
-        title: '图灵机器人',
+        title: 'AI问答',
       },
     },
     VideoPlayer: {

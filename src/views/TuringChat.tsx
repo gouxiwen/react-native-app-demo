@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import { fetchGetTuring } from '../services/http';
@@ -29,6 +30,7 @@ function TuringChatScreen() {
   const [inputText, setInputText] = React.useState('');
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [loading, setLoading] = React.useState(false);
+  const flatListRef = React.useRef<FlatList>(null);
 
   // 发送消息给图灵机器人
   const sendMessage = async () => {
@@ -44,7 +46,14 @@ function TuringChatScreen() {
       timestamp: new Date(),
     };
 
-    setMessages(prevMessages => [...prevMessages, userMessage]);
+    setMessages(prevMessages => {
+      const newMessages = [...prevMessages, userMessage];
+      // 滚动到底部
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+      return newMessages;
+    });
     setInputText('');
     setLoading(true);
 
@@ -70,7 +79,14 @@ function TuringChatScreen() {
         timestamp: new Date(),
       };
 
-      setMessages(prevMessages => [...prevMessages, botMessage]);
+      setMessages(prevMessages => {
+        const newMessages = [...prevMessages, botMessage];
+        // 滚动到底部
+        setTimeout(() => {
+          flatListRef.current?.scrollToEnd({ animated: true });
+        }, 100);
+        return newMessages;
+      });
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -110,11 +126,13 @@ function TuringChatScreen() {
     <CustomSafeAreaViws>
       <View style={styles.container}>
         <FlatList
+          ref={flatListRef}
           data={messages}
           renderItem={renderMessage}
           keyExtractor={item => item.id}
           style={styles.messagesList}
           contentContainerStyle={styles.messagesContainer}
+          ListFooterComponent={loading ? <LoadingIndicator /> : null}
         />
 
         <KeyboardAvoidingView
@@ -145,6 +163,16 @@ function TuringChatScreen() {
     </CustomSafeAreaViws>
   );
 }
+
+// 加载指示器组件
+const LoadingIndicator = () => (
+  <View style={styles.loadingWrapper}>
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="small" color={primaryColor} />
+      <Text style={styles.loadingText}>正在思考中...</Text>
+    </View>
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -179,10 +207,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 4,
   },
   botMessage: {
-    backgroundColor: '#FBF8F1', // 淡米色卡片背景
+    backgroundColor: '#FFF',
     borderBottomLeftRadius: 4,
-    borderWidth: 1,
-    borderColor: '#E8DFC9', // 淡褐色边框
   },
   messageText: {
     fontSize: 16,
@@ -192,7 +218,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   botMessageText: {
-    color: '#534741', // 深褐色文字
+    color: primaryColor,
   },
   timestamp: {
     fontSize: 10,
@@ -203,14 +229,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 16,
     backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#E8DFC9',
     alignItems: 'center',
   },
   textInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#E8DFC9',
+    borderColor: primaryColor,
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -227,6 +251,24 @@ const styles = StyleSheet.create({
   sendButtonText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  loadingWrapper: {
+    alignItems: 'flex-start',
+    marginVertical: 8,
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    padding: 12,
+    borderRadius: 16,
+    borderBottomLeftRadius: 4,
+    maxWidth: width * 0.75,
+  },
+  loadingText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: primaryColor,
   },
 });
 

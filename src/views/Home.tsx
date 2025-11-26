@@ -93,7 +93,7 @@ function HomeScreen() {
             },
             {
               id: 7,
-              name: '图灵机器人',
+              name: 'AI问答',
               icon: '🤖',
               color: '#FF9500',
               route: 'TuringChat',
