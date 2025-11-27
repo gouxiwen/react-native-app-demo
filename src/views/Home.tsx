@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 // import { useNavigation } from '@react-navigation/native';
 // import { Button } from '@react-navigation/elements';
@@ -45,79 +46,82 @@ function HomeScreen() {
   //   });
   // }, [navigation]);
   return (
-    <CustomSafeAreaViws>
-      <ScrollView style={styles.container}>
-        <View style={styles.gridContainer}>
-          {[
-            {
-              id: 1,
-              name: '天气查询',
-              icon: '☀️',
-              color: '#FF9500',
-              route: 'Weather',
-            },
-            {
-              id: 2,
-              name: '快递查询',
-              icon: '📦',
-              color: '#007AFF',
-              route: 'Express',
-            },
-            {
-              id: 3,
-              name: '油价查询',
-              icon: '⛽️',
-              color: '#34C759',
-              route: 'OilPrice',
-            },
-            {
-              id: 4,
-              name: '车价查询',
-              icon: '🚗',
-              color: '#FF3B30',
-              route: 'CarPrice',
-            },
-            {
-              id: 5,
-              name: '每日英语',
-              icon: '📚',
-              color: '#5856D6',
-              route: 'DailyEnglish',
-            },
-            {
-              id: 6,
-              name: '随机一言/古诗词',
-              icon: '📝',
-              color: '#AF52DE',
-              route: 'YiyanPoetry',
-            },
-            {
-              id: 7,
-              name: 'AI问答',
-              icon: '🤖',
-              color: '#FF9500',
-              route: 'TuringChat',
-            },
-          ].map(item => (
-            <TouchableOpacity
-              key={item.id}
-              style={[styles.gridItem, { backgroundColor: item.color }]}
-              onPress={() => navigation.navigate(item.route as any)}
-            >
-              <Text style={styles.gridIcon}>{item.icon}</Text>
-              <Text style={styles.gridText}>{item.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-    </CustomSafeAreaViws>
+    <>
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <CustomSafeAreaViws>
+        <ScrollView style={styles.container}>
+          <View style={styles.gridContainer}>
+            {[
+              {
+                id: 1,
+                name: '天气查询',
+                icon: '☀️',
+                color: '#FF9500',
+                route: 'Weather',
+              },
+              {
+                id: 2,
+                name: '快递查询',
+                icon: '📦',
+                color: '#007AFF',
+                route: 'Express',
+              },
+              {
+                id: 3,
+                name: '油价查询',
+                icon: '⛽️',
+                color: '#34C759',
+                route: 'OilPrice',
+              },
+              {
+                id: 4,
+                name: '车价查询',
+                icon: '🚗',
+                color: '#FF3B30',
+                route: 'CarPrice',
+              },
+              {
+                id: 5,
+                name: '每日英语',
+                icon: '📚',
+                color: '#5856D6',
+                route: 'DailyEnglish',
+              },
+              {
+                id: 6,
+                name: '随机一言/古诗词',
+                icon: '📝',
+                color: '#AF52DE',
+                route: 'YiyanPoetry',
+              },
+              {
+                id: 7,
+                name: 'AI问答',
+                icon: '🤖',
+                color: '#FF9500',
+                route: 'TuringChat',
+              },
+            ].map(item => (
+              <TouchableOpacity
+                key={item.id}
+                style={[styles.gridItem, { backgroundColor: item.color }]}
+                onPress={() => navigation.navigate(item.route as any)}
+              >
+                <Text style={styles.gridIcon}>{item.icon}</Text>
+                <Text style={styles.gridText}>{item.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </CustomSafeAreaViws>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fff',
     // padding: 16,
   },
   gridContainer: {

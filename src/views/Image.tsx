@@ -4,6 +4,7 @@ import {
   Alert,
   Modal,
   Pressable,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
@@ -11,16 +12,28 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useWindowDimensions } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import {
+  TabView,
+  SceneMap,
+  TabBar,
+  SceneRendererProps,
+  NavigationState,
+  TabDescriptor,
+  Route,
+} from 'react-native-tab-view';
 import { fetchGetAiImg } from '../services/http';
 import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
 import { primaryColor } from '../common/const';
 import { downloadImage } from '../common/camera';
+import Animated from 'react-native-reanimated';
+import { useFocusEffect } from '@react-navigation/native';
 
-function AiImageScreen({ type = 'ai' }: { type?: string }) {
+function AiImageScreen({ type = 'head' }: { type?: string }) {
   const [imageUrl, setImageUrl] = React.useState<string>();
   const [loading, setLoading] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [showBottom, setShowBottom] = React.useState(false);
+  const toggle = () => setShowBottom(prev => !prev); // 切换显示状态的方法
   const getImageUrl = async () => {
     setLoading(true);
     const res: any = await fetchGetAiImg(type);
@@ -95,10 +108,9 @@ function AiImageScreen({ type = 'ai' }: { type?: string }) {
       </Modal>
       <TouchableWithoutFeedback
         onLongPress={() => {
-          console.log('long');
-
           setModalVisible(!modalVisible);
         }}
+        onPress={toggle}
       >
         <FastImage
           style={styles.image}
@@ -106,34 +118,54 @@ function AiImageScreen({ type = 'ai' }: { type?: string }) {
           resizeMode={FastImage.resizeMode.contain}
         />
       </TouchableWithoutFeedback>
-      <View style={styles.centeredView}>
-        <View style={styles.buttonWrap}>
-          <Pressable
-            style={[styles.button, styles.buttonConfirm]}
-            onPress={getImageUrl}
-          >
-            <Text style={styles.textStyle}>更新图片</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.button, styles.buttonConfirm]}
-            onPress={downImage}
-          >
-            <Text style={styles.textStyle}>保存图片</Text>
-          </Pressable>
-        </View>
-      </View>
+      <Animated.View
+        style={[
+          styles.buttonWrapBottom,
+          {
+            opacity: showBottom ? 0.6 : 0,
+            transitionProperty: ['opacity'],
+            transitionDuration: 100,
+          },
+        ]}
+      >
+        <Pressable
+          style={[styles.button, styles.buttonConfirm]}
+          onPress={getImageUrl}
+        >
+          <Text style={styles.textStyle}>更新图片</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.button, styles.buttonConfirm]}
+          onPress={downImage}
+        >
+          <Text style={styles.textStyle}>保存图片</Text>
+        </Pressable>
+      </Animated.View>
     </CustomSafeAreaViws>
   );
 }
 
+const renderTabBar = (
+  props: SceneRendererProps & {
+    navigationState: NavigationState<Route>;
+    options: Record<string, TabDescriptor<Route>> | undefined;
+  },
+) => (
+  <TabBar
+    {...props}
+    indicatorStyle={{ backgroundColor: '#fff' }}
+    style={{ backgroundColor: primaryColor }}
+  />
+);
+
 const renderScene = SceneMap({
-  AiImageScreen: () => <AiImageScreen />,
+  // AiImageScreen: () => <AiImageScreen />,
   HeadImageScreen: () => <AiImageScreen type="head" />,
   WallPaperImageScreen: () => <AiImageScreen type="wallpaper" />,
 });
 
 const routes = [
-  { key: 'AiImageScreen', title: 'AI图片' },
+  // { key: 'AiImageScreen', title: 'AI图片' },
   { key: 'HeadImageScreen', title: '头像' },
   { key: 'WallPaperImageScreen', title: '壁纸' },
 ];
@@ -141,14 +173,29 @@ const routes = [
 function ImageScreen() {
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
+  const [isFocused, setIsFocused] = React.useState(false);
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsFocused(true);
+      return () => {
+        setIsFocused(false);
+      };
+    }, []),
+  );
 
   return (
-    <TabView
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-    />
+    <>
+      {isFocused && (
+        <StatusBar backgroundColor={primaryColor} barStyle="light-content" />
+      )}
+      <TabView
+        navigationState={{ index, routes }}
+        renderTabBar={renderTabBar}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+      />
+    </>
   );
 }
 
@@ -156,8 +203,8 @@ export default ImageScreen;
 
 const styles = StyleSheet.create({
   image: {
-    width: '100%',
-    height: '80%',
+    flex: 1,
+    backgroundColor: '#000',
   },
   centeredView: {
     flex: 1,
@@ -171,6 +218,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   modalView: {
+    width: 'auto',
+    height: 'auto',
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
@@ -187,6 +236,17 @@ const styles = StyleSheet.create({
   },
   buttonWrap: {
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 20,
+  },
+  buttonWrapBottom: {
+    position: 'absolute',
+    bottom: 20,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     gap: 20,
   },
   button: {

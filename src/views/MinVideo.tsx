@@ -381,11 +381,7 @@ function MinVideoScreen() {
   return (
     <>
       {isFocused && (
-        <StatusBar
-          backgroundColor="transparent"
-          barStyle="light-content"
-          translucent
-        />
+        <StatusBar backgroundColor="#000" barStyle="light-content" />
       )}
       <FlatList
         contentContainerStyle={{}}

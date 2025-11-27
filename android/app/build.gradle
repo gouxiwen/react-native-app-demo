@@ -135,8 +135,6 @@ android {
             manifestPlaceholders = [
                 app_name: "@string/app_name_dev",
                 app_icon: "@mipmap/ic_launcher_dev",
-                app_icon_round: "@mipmap/ic_launcher_round"
-
             ]
             // buildConfigField "String", "FLAVOR", "\"dev\"" 
             // buildConfigField "String", "ENVIRONMENT", "\"development\""
@@ -147,7 +145,6 @@ android {
             manifestPlaceholders = [
                 app_name: "@string/app_name_staging",
                 app_icon: "@mipmap/ic_launcher_staging",
-                app_icon_round: "@mipmap/ic_launcher_round"
             ]
             // buildConfigField "String", "FLAVOR", "\"staging\""
             // buildConfigField "String", "ENVIRONMENT", "\"staging\""
@@ -158,7 +155,6 @@ android {
             manifestPlaceholders = [
                 app_name: "@string/app_name",
                 app_icon: "@mipmap/ic_launcher",
-                app_icon_round: "@mipmap/ic_launcher_round"
             ]
             // buildConfigField "String", "FLAVOR", "\"prod\""
             // buildConfigField "String", "ENVIRONMENT", "\"production\""

@@ -149,12 +149,13 @@ const HomeBottomTabs = createBottomTabNavigator({
     Home: {
       screen: HomeScreen,
       options: {
-        title: '工具',
+        title: '百宝箱',
         // headerTitle: props => <LogoTitle {...props} />,
         // headerRight: () => <Button>Update count</Button>,
         tabBarIcon: ({ /* focused, */ color, size }) => (
-          <AntDesign name="tool" color={color} size={size} />
+          <AntDesign name="dropbox" color={color} size={size} />
         ),
+        headerShown: false,
       },
     },
     AiImage: {
@@ -164,6 +165,7 @@ const HomeBottomTabs = createBottomTabNavigator({
         tabBarIcon: ({ /* focused, */ color, size }) => (
           <AntDesign name="picture" color={color} size={size} />
         ),
+        headerShown: false,
       },
     },
   },
@@ -182,7 +184,7 @@ const RootStack = createNativeStackNavigator({
     headerStyle: {
       backgroundColor: '#fff',
     },
-    headerTintColor: '#000',
+    headerTintColor: primaryColor,
     headerTitleStyle: {
       fontWeight: 'bold',
     },

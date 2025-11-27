@@ -118,7 +118,22 @@ aaptOptions.useNewCruncher = false
 ### 生成图标
 
 https://icon.wuruihong.com/
+角标不支持自定义
+
 https://icon.kitchen/i/H4sIAAAAAAAAA6tWKkvMKU0tVrKqVkpJLMoOyUjNTVWySkvMKU7VUUpLD6ksAHKVMnMT01OVQAK%2BicXZUPlaHaXc%2FJTSHJDuaKXEvJSi%2FMwUoKLM%2FGIgWZ6apBRbCwC9UKrUYAAAAA%3D%3D
+
+支持自定义角标，但是生成的图标有外边距，原因是这里生成的是新的自适应图标：
+https://cloud.tencent.com/developer/article/1456330
+
+总结：
+
+icon 都读取读取 AndroidManifest.xml 中的 icon 配置。
+
+android:roundIcon 是 Android 7.1 的过渡配置
+
+如果你的 APP 中的 targetSdkVersion 是低于 26 的，那么就可以不用进行应用图标适配，Android 8.0 系统仍然是向下兼容的
+
+但是如果你将 targetSdkVersion 指定到了 26 或者更高，那么 Android 系统就会认为你的 APP 已经做好了 8.0 系统的适配工作，当然包括了应用图标的适配，读取 mipmap-anydpi-v26 目录下的配置进行自适应。
 
 ## 网络请求调试
 
