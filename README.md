@@ -183,6 +183,35 @@ android/app/src 下的 main 为默认的构建类型，可以创建不同的文�
 
 安卓构建文档：https://developer.android.com/build/build-variants?hl=zh-cn#groovy
 
+### 加快构建速度
+
+1. 指定 CPU 架构
+
+cli 命令添加--active-arch-only 会自动识别设备的 CPU 架构，只编译对应的架构，加快构建速度
+
+```
+react-native run-android --active-arch-only
+```
+
+如果直接使用 gradlew 命令，则使用-PreactNativeArchitectures=x86,x86_64,arm64-v8a,armeabi-v7a 指定特定 CPU 架构
+
+```
+./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a
+```
+
+需要注意如果是打生成包，应该去掉改参数，以适应所有设备
+
+2. 启用 Gradle 配置缓存
+
+android/gradle.properties 文件中添加以下行来启用 Gradle 配置缓存：
+
+```
+ # 启用 Gradle 配置缓存
+org.gradle.configuration-cache=true
+# 忽略配置缓存问题
+org.gradle.configuration-cache.problems=warn
+```
+
 ## 依赖库配置记录
 
 react-native-fs 文档过时，不需要安卓文档进行手动配置，直接安装
