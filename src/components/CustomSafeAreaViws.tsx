@@ -20,6 +20,8 @@ function CustomSafeAreaViws({
   right?: number;
 }) {
   const insets = useSafeAreaInsets();
+  // 在没有状态栏的情况下top才不为0
+  // 在没有底部导航栏的情况下bottom才不为0
   return (
     <View
       style={{

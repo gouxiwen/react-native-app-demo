@@ -9,9 +9,10 @@ import {
   Pressable,
   TouchableWithoutFeedback,
   ViewToken,
-  Dimensions,
   StatusBar,
   GestureResponderEvent,
+  useWindowDimensions,
+  Dimensions,
 } from 'react-native';
 import { fetchGetMinVideo } from '../services/http';
 import FastImage from 'react-native-fast-image';
@@ -76,7 +77,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const { width, height: screenHeight } = Dimensions.get('screen');
+const statusBarHeight = StatusBar.currentHeight || 0; // 输出自定义状态栏高度，和原生状态栏有6像素误差，即下面的difference值
+const screenHeight = Dimensions.get('screen').height;
+const windowHeight = Dimensions.get('window').height;
+let difference = statusBarHeight - (screenHeight - windowHeight); // 包含状态栏和导航栏高度之和
+difference = difference < 0 ? 0 : difference; // 安卓某些机型会出现负数情况
+
 function VideoItemFullScreen({
   item,
   index,
@@ -92,6 +98,7 @@ function VideoItemFullScreen({
   onPress: (event: GestureResponderEvent) => void;
   onLongPress: (event: GestureResponderEvent) => void;
 }) {
+  const { width } = useWindowDimensions();
   const handlePause = (event: GestureResponderEvent) => {
     Toast.showWithGravity(
       '长按右侧按钮可以切换为列表模式哦~',
@@ -205,8 +212,9 @@ function VideoItem({
 }
 
 function MinVideoScreen() {
+  const { height: usewindowHeight } = useWindowDimensions(); // 不包含状态栏高度
   const tabBarHeight = useBottomTabBarHeight();
-  const height = screenHeight - tabBarHeight;
+  const height = usewindowHeight - tabBarHeight - difference;
   const [refreshing, setRefreshing] = React.useState(false);
   const [listMode, setListMode] = React.useState(false);
   const [isFocused, setIsFocused] = React.useState(false);
