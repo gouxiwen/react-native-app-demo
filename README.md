@@ -103,6 +103,8 @@ https://blog.csdn.net/Landen2011/article/details/125603821
 
 https://blog.csdn.net/qq_39524670/article/details/83020123
 
+刘海屏无法全屏
+
 ### 解决打包生成时报错 AAPT: error: file failed to compile
 
 解决办法：在项目的 build.gradle 中 android 层内添加以下：
@@ -229,4 +231,4 @@ react-native-fs 文档过时，不需要安卓文档进行手动配置，直接�
 9. https://www.npmjs.com/package/react-native-splash-screen
 10. https://docs.swmansion.com/react-native-worklets/docs/
 11. https://react-native-async-storage.github.io/2.0/Installation/
-12. https://reactnavigation.org/docs/tab-view
+12. https://reactnavigation.org/docs/tab-view 13.https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation

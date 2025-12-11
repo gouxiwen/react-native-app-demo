@@ -26,7 +26,7 @@ class MainActivity : ReactActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     supportFragmentManager.fragmentFactory = RNScreensFragmentFactory()
-    SplashScreen.show(this);
+    SplashScreen.show(this, true); 
     super.onCreate(savedInstanceState)
   }
 }

@@ -101,6 +101,13 @@ function HomeScreen() {
                 color: '#FF9500',
                 route: 'TuringChat',
               },
+              {
+                id: 8,
+                name: '拍照',
+                icon: '📷',
+                color: '#007AFF',
+                route: 'Camera',
+              },
             ].map(item => (
               <TouchableOpacity
                 key={item.id}

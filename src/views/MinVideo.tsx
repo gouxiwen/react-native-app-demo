@@ -83,27 +83,53 @@ const windowHeight = Dimensions.get('window').height;
 let difference = statusBarHeight - (screenHeight - windowHeight); // 包含状态栏和导航栏高度之和
 difference = difference < 0 ? 0 : difference; // 安卓某些机型会出现负数情况
 
+function ModelChangeBtn({
+  show,
+  onLongPress,
+}: {
+  show: boolean;
+  onLongPress: (event: GestureResponderEvent) => void;
+}) {
+  return (
+    <TouchableWithoutFeedback onLongPress={onLongPress}>
+      {/* video组件会拦截点击事件 */}
+      <View
+        style={{
+          position: 'absolute',
+          width: 30,
+          height: 30,
+          top: 100,
+          right: 10,
+          zIndex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        {show ? <AntDesign name="bars" color={primaryColor} size={30} /> : ''}
+      </View>
+    </TouchableWithoutFeedback>
+  );
+}
+
 function VideoItemFullScreen({
   item,
   index,
   state,
   height,
   onPress,
-  onLongPress,
 }: {
   item: VideoItemType;
   index: number;
   state: any;
   height: number;
   onPress: (event: GestureResponderEvent) => void;
-  onLongPress: (event: GestureResponderEvent) => void;
 }) {
   const { width } = useWindowDimensions();
   const handlePause = (event: GestureResponderEvent) => {
     Toast.showWithGravity(
       '长按右侧按钮可以切换为列表模式哦~',
       Toast.LONG,
-      Toast.TOP,
+      Toast.SHORT,
     );
     onPress(event);
   };
@@ -130,27 +156,6 @@ function VideoItemFullScreen({
           disablePlayPause
           controlTimeout={2000}
         />
-        <TouchableWithoutFeedback onLongPress={onLongPress}>
-          {/* video组件会拦截点击事件 */}
-          <View
-            style={{
-              position: 'absolute',
-              width: 30,
-              height: 30,
-              top: 100,
-              right: 10,
-              zIndex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            {state.isPause ? (
-              <AntDesign name="bars" color={primaryColor} size={30} />
-            ) : (
-              ''
-            )}
-          </View>
-        </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={onPress}>
           <View
             style={{
@@ -174,19 +179,10 @@ function VideoItemFullScreen({
     </View>
   );
 }
-function VideoItem({
-  item,
-  onLongPress,
-}: {
-  item: VideoItemType;
-  onLongPress: (event: GestureResponderEvent) => void;
-}) {
+function VideoItem({ item }: { item: VideoItemType }) {
   const navigation = useNavigation<CommonNavigationProps>();
   return (
-    <Pressable
-      onPress={() => navigation.navigate('VideoPlayer', item)}
-      onLongPress={onLongPress}
-    >
+    <Pressable onPress={() => navigation.navigate('VideoPlayer', item)}>
       <View style={styles.item}>
         <View style={styles.userInfo}>
           <FastImage
@@ -217,6 +213,7 @@ function MinVideoScreen() {
   const height = usewindowHeight - tabBarHeight - difference;
   const [refreshing, setRefreshing] = React.useState(false);
   const [listMode, setListMode] = React.useState(false);
+  const listModeRef = React.useRef<FlatList<VideoItemType>>(null);
   const [isFocused, setIsFocused] = React.useState(false);
   const pageSize = 20;
   const pageNo = React.useRef(0);
@@ -343,9 +340,9 @@ function MinVideoScreen() {
       setState(pre => ({
         ...pre,
         isPause: false,
-        current: viewableItems[0].index as number,
+        current: viewableItems[0]?.index as number,
       }));
-      if (viewableItems[0].index === data.length - 1) {
+      if (viewableItems[0]?.index === data.length - 1) {
         //如果当前页大于或等于总页数，那就是到最后一页了，返回
         if (pageNo.current !== 1 && pageNo.current >= totalPage.current) {
           return;
@@ -356,6 +353,16 @@ function MinVideoScreen() {
       }
     }
   }
+
+  React.useEffect(() => {
+    if (listMode) {
+      listModeRef.current?.scrollToIndex({
+        index: state.current,
+        animated: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listMode]);
 
   const VIEWABILITY_CONFIG = {
     viewAreaCoveragePercentThreshold: 80, //item滑动80%部分才会到下一个
@@ -370,20 +377,33 @@ function MinVideoScreen() {
     );
   if (listMode) {
     return (
-      <FlatList
-        contentContainerStyle={styles.container}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        onEndReachedThreshold={0.5}
-        onEndReached={_onEndReached}
-        ListFooterComponent={_renderFooter}
-        data={data}
-        renderItem={({ item }) => (
-          <VideoItem item={item} onLongPress={() => setListMode(pre => !pre)} />
-        )}
-        keyExtractor={item => item.id.toString()}
-      />
+      <>
+        <FlatList
+          ref={listModeRef}
+          contentContainerStyle={styles.container}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          onEndReachedThreshold={0.5}
+          onEndReached={_onEndReached}
+          ListFooterComponent={_renderFooter}
+          data={data}
+          renderItem={({ item }) => <VideoItem item={item} />}
+          keyExtractor={item => item.id.toString()}
+          onViewableItemsChanged={({ viewableItems }) => {
+            if (viewableItems.length > 0) {
+              setState(pre => ({
+                ...pre,
+                current: viewableItems[0]?.index as number,
+              }));
+            }
+          }}
+        />
+        <ModelChangeBtn
+          onLongPress={() => setListMode(false)}
+          show={state.isPause}
+        />
+      </>
     );
   }
   return (
@@ -408,9 +428,6 @@ function MinVideoScreen() {
                 isPause: !pre.isPause,
               }));
             }}
-            onLongPress={() => {
-              setListMode(pre => !pre);
-            }}
           />
         )}
         keyExtractor={item => item.id.toString()}
@@ -418,9 +435,14 @@ function MinVideoScreen() {
         getItemLayout={(data, index) => {
           return { length: height, offset: height * index, index };
         }}
+        initialScrollIndex={state.current}
         viewabilityConfig={VIEWABILITY_CONFIG}
         showsHorizontalScrollIndicator={false}
         onViewableItemsChanged={_onViewableItemsChanged}
+      />
+      <ModelChangeBtn
+        onLongPress={() => setListMode(true)}
+        show={state.isPause}
       />
     </>
   );

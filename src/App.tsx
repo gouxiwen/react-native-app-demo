@@ -36,6 +36,8 @@ import CarPriceScreen from './views/CarPrice';
 import DailyEnglishScreen from './views/DailyEnglish';
 import YiyanPoetryScreen from './views/YiyanPoetry';
 import TuringChatScreen from './views/TuringChat';
+import CameraScreen from './views/Camera';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 //打印接口域名配置信息
 console.log(Config.FLAVOR, '=Config==config', Config);
@@ -135,17 +137,6 @@ const HomeBottomTabs = createBottomTabNavigator({
     headerTitleAlign: 'center',
   },
   screens: {
-    MinVideo: {
-      screen: MinVideoScreen,
-      options: {
-        title: '短视频',
-        tabBarIcon: ({ /* focused, */ color, size }) => {
-          return <AntDesign name="play-square" color={color} size={size} />;
-        },
-        headerShown: false,
-        // tabBarBadge: 0,
-      },
-    },
     Home: {
       screen: HomeScreen,
       options: {
@@ -156,6 +147,17 @@ const HomeBottomTabs = createBottomTabNavigator({
           <AntDesign name="dropbox" color={color} size={size} />
         ),
         headerShown: false,
+      },
+    },
+    MinVideo: {
+      screen: MinVideoScreen,
+      options: {
+        title: '短视频',
+        tabBarIcon: ({ /* focused, */ color, size }) => {
+          return <AntDesign name="play-square" color={color} size={size} />;
+        },
+        headerShown: false,
+        // tabBarBadge: 0,
       },
     },
     AiImage: {
@@ -238,6 +240,12 @@ const RootStack = createNativeStackNavigator({
       screen: TuringChatScreen,
       options: {
         title: 'AI问答',
+      },
+    },
+    Camera: {
+      screen: CameraScreen,
+      options: {
+        title: '拍照',
       },
     },
     VideoPlayer: {
@@ -332,7 +340,9 @@ export default function App() {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor="#fff"
       />
-      <Navigation />;
+      <GestureHandlerRootView>
+        <Navigation />;
+      </GestureHandlerRootView>
     </SafeAreaProvider>
   );
 }
