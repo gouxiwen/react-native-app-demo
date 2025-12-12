@@ -103,7 +103,7 @@ function HomeScreen() {
               },
               {
                 id: 8,
-                name: '拍照',
+                name: '相机',
                 icon: '📷',
                 color: '#007AFF',
                 route: 'Camera',

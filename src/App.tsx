@@ -36,7 +36,7 @@ import CarPriceScreen from './views/CarPrice';
 import DailyEnglishScreen from './views/DailyEnglish';
 import YiyanPoetryScreen from './views/YiyanPoetry';
 import TuringChatScreen from './views/TuringChat';
-import CameraScreen from './views/Camera';
+import CameraExamplesScreen from './views/CameraExamples';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 //打印接口域名配置信息
@@ -243,9 +243,9 @@ const RootStack = createNativeStackNavigator({
       },
     },
     Camera: {
-      screen: CameraScreen,
+      screen: CameraExamplesScreen,
       options: {
-        title: '拍照',
+        title: '相机',
       },
     },
     VideoPlayer: {

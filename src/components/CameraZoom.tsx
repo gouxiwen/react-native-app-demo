@@ -1,8 +1,4 @@
-import {
-  Camera,
-  useCameraDevice,
-  CameraProps,
-} from 'react-native-vision-camera';
+import { Camera, CameraProps } from 'react-native-vision-camera';
 import Reanimated, {
   useAnimatedProps,
   useSharedValue,
@@ -11,14 +7,15 @@ import Reanimated, {
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { StyleSheet, Text } from 'react-native';
+import { forwardRef } from 'react';
 
 Reanimated.addWhitelistedNativeProps({
   zoom: true,
 });
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 
-export default function ZoomCamra() {
-  const device = useCameraDevice('back');
+export default forwardRef(function ZoomCamra(props: CameraProps, ref) {
+  const device = props.device;
   const zoom = useSharedValue(device?.neutralZoom);
   const zoomOffset = useSharedValue(0);
   const gesture = Gesture.Pinch()
@@ -45,11 +42,12 @@ export default function ZoomCamra() {
   return (
     <GestureDetector gesture={gesture}>
       <ReanimatedCamera
+        {...props}
+        ref={ref as any}
         style={StyleSheet.absoluteFill}
         device={device}
-        isActive={true}
         animatedProps={animatedProps}
       />
     </GestureDetector>
   );
-}
+});

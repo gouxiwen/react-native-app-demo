@@ -232,3 +232,5 @@ react-native-fs 文档过时，不需要安卓文档进行手动配置，直接�
 10. https://docs.swmansion.com/react-native-worklets/docs/
 11. https://react-native-async-storage.github.io/2.0/Installation/
 12. https://reactnavigation.org/docs/tab-view 13.https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation
+
+其他配置：图标、启动页、应用名称、应用风味及环境区分、权限
