@@ -55,8 +55,11 @@ export type VideoListParams = {
   page: number;
   size: number;
 };
+// export function fetchGetMinVideo(data: VideoListParams) {
+//   return get('https://api.apiopen.top/api/getHaoKanVideo', data);
+// }
 export function fetchGetMinVideo(data: VideoListParams) {
-  return get('https://api.apiopen.top/api/getHaoKanVideo', data);
+  return get(`http://baobab.kaiyanapp.com/api/v4/discovery/hot?start=${data.page}&num=${data.size}`);
 }
 
 // ---------->车辆价格信息查询

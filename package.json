@@ -9,6 +9,7 @@
     "android-prod": "SET ENVFILE=.env.prod && react-native  run-android --active-arch-only --mode=ProdDebug --appIdSuffix \"prod.debug\"",
     "bundle-android-dev": "cd android && SET ENVFILE=.env.dev && ./gradlew assembleDevRelease -PreactNativeArchitectures=arm64-v8a",
     "bundle-android-dev:mac": "cd android && ENVFILE=.env.dev && ./gradlew assembleDevRelease -PreactNativeArchitectures=arm64-v8a",
+    "bundle-android-prod:mac": "cd android && ENVFILE=.env.prod && ./gradlew assembleProdRelease -PreactNativeArchitectures=arm64-v8a",
     "bundle-android-staging": "cd android && SET ENVFILE=.env.staging && ./gradlew assembleStagingRelease -PreactNativeArchitectures=arm64-v8a",
     "bundle-android-prod": "cd android && SET ENVFILE=.env.prod && ./gradlew assembleProdRelease -PreactNativeArchitectures=arm64-v8a",
     "bundle-android-aab-dev": "cd android && export ENVFILE=.env.dev ./gradlew bundleDevRelease -PreactNativeArchitectures=arm64-v8a",

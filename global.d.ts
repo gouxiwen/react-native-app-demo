@@ -45,9 +45,14 @@ declare module 'react-native-config' {
 export type VideoItemType = {
   id: number;
   title: string;
-  userName: string;
-  userPic: string;
-  coverUrl: string;
+  author: {
+    id: number;
+    name: string;
+    icon: string;
+  };
+  cover: {
+    feed: string;
+  }
   playUrl: string;
   duration: string;
 };

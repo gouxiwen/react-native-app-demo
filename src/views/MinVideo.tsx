@@ -188,7 +188,7 @@ function VideoItem({ item }: { item: VideoItemType }) {
           <FastImage
             style={styles.avatar}
             source={{
-              uri: item.userPic,
+              uri: item.author?.icon,
               priority: FastImage.priority.normal,
             }}
             resizeMode={FastImage.resizeMode.cover}
@@ -199,7 +199,10 @@ function VideoItem({ item }: { item: VideoItemType }) {
         </View>
         <FastImage
           style={styles.videoCover}
-          source={{ uri: item.coverUrl, priority: FastImage.priority.normal }}
+          source={{
+            uri: item.cover?.feed,
+            priority: FastImage.priority.normal,
+          }}
           resizeMode={FastImage.resizeMode.cover}
         />
       </View>
@@ -227,16 +230,22 @@ function MinVideoScreen() {
   function getVideoList() {
     return fetchGetMinVideo({ page: pageNo.current, size: pageSize })
       .then((res: any) => {
-        if (res.code === 200) {
-          totalPage.current = res.result.total;
-          if (pageNo.current === 0) setData(res.result.list);
-          else setData(prevData => [...prevData, ...res.result.list]);
-          if (pageNo.current >= totalPage.current) {
-            setShowFoot(1);
-          } else {
-            setShowFoot(0);
-          }
+        console.log(res);
+        const videoList = res.itemList
+          .filter((item: any) => item.type === 'video')
+          .map((item: any) => item.data);
+        console.log(videoList);
+
+        // if (res.code === 200) {
+        totalPage.current = res.total || Infinity;
+        if (pageNo.current === 0) setData(videoList);
+        else setData(prevData => [...prevData, ...videoList]);
+        if (pageNo.current >= totalPage.current) {
+          setShowFoot(1);
+        } else {
+          setShowFoot(0);
         }
+        // }
       })
       .finally(() => {
         setRefreshing(false);
@@ -389,7 +398,7 @@ function MinVideoScreen() {
           ListFooterComponent={_renderFooter}
           data={data}
           renderItem={({ item }) => <VideoItem item={item} />}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(_item, index) => index.toString()}
           onViewableItemsChanged={({ viewableItems }) => {
             if (viewableItems.length > 0) {
               setState(pre => ({
@@ -430,7 +439,7 @@ function MinVideoScreen() {
             }}
           />
         )}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={(_item, index) => index.toString()}
         pagingEnabled={true}
         getItemLayout={(data, index) => {
           return { length: height, offset: height * index, index };
