@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -82,6 +82,9 @@ const screenHeight = Dimensions.get('screen').height;
 const windowHeight = Dimensions.get('window').height;
 let difference = statusBarHeight - (screenHeight - windowHeight); // 包含状态栏和导航栏高度之和
 difference = difference < 0 ? 0 : difference; // 安卓某些机型会出现负数情况
+// console.log('statusBarHeight', statusBarHeight);
+// console.log('screenHeight', screenHeight);
+// console.log('windowHeight', windowHeight);
 
 function ModelChangeBtn({
   show,
@@ -126,11 +129,6 @@ function VideoItemFullScreen({
 }) {
   const { width } = useWindowDimensions();
   const handlePause = (event: GestureResponderEvent) => {
-    Toast.showWithGravity(
-      '长按右侧按钮可以切换为列表模式哦~',
-      Toast.LONG,
-      Toast.SHORT,
-    );
     onPress(event);
   };
   return (
@@ -140,7 +138,14 @@ function VideoItemFullScreen({
         height: height,
       }}
     >
-      <View style={{ flex: 1, position: 'relative' }}>
+      <View
+        style={{
+          flex: 1,
+          position: 'relative',
+          // borderColor: 'red',
+          // borderWidth: 1,
+        }}
+      >
         <Video
           source={{ uri: item.playUrl }}
           style={{ flex: 1, backgroundColor: '#000' }}
@@ -213,6 +218,9 @@ function VideoItem({ item }: { item: VideoItemType }) {
 function MinVideoScreen() {
   const { height: usewindowHeight } = useWindowDimensions(); // 不包含状态栏高度
   const tabBarHeight = useBottomTabBarHeight();
+  // console.log('usewindowHeight', usewindowHeight);
+  // console.log('tabBarHeight', tabBarHeight);
+
   const height = usewindowHeight - tabBarHeight - difference;
   const [refreshing, setRefreshing] = React.useState(false);
   const [listMode, setListMode] = React.useState(false);
@@ -376,6 +384,17 @@ function MinVideoScreen() {
   const VIEWABILITY_CONFIG = {
     viewAreaCoveragePercentThreshold: 80, //item滑动80%部分才会到下一个
   };
+
+  const isShow = useRef(false);
+  const showTips = () => {
+    if (isShow.current) return;
+    isShow.current = true;
+    Toast.showWithGravity(
+      '长按右侧按钮可以切换为列表模式哦~',
+      Toast.LONG,
+      Toast.SHORT,
+    );
+  };
   if (!data.length)
     return (
       <ActivityIndicator
@@ -432,6 +451,7 @@ function MinVideoScreen() {
             state={state}
             height={height}
             onPress={() => {
+              showTips();
               setState(pre => ({
                 ...pre,
                 isPause: !pre.isPause,

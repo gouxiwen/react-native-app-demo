@@ -130,6 +130,7 @@ const HomeBottomTabs = createBottomTabNavigator({
     tabBarStyle: {
       backgroundColor: '#000',
       borderColor: '#000',
+      borderWidth: 0,
     },
     tabBarActiveTintColor: primaryColor,
     tabBarInactiveTintColor: '#fff',
