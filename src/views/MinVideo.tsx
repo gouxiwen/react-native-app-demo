@@ -12,7 +12,6 @@ import {
   StatusBar,
   GestureResponderEvent,
   useWindowDimensions,
-  Dimensions,
 } from 'react-native';
 import { fetchGetMinVideo } from '../services/http';
 import FastImage from 'react-native-fast-image';
@@ -76,15 +75,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
-
-const statusBarHeight = StatusBar.currentHeight || 0; // 输出自定义状态栏高度，和原生状态栏有6像素误差，即下面的difference值
-const screenHeight = Dimensions.get('screen').height;
-const windowHeight = Dimensions.get('window').height;
-let difference = statusBarHeight - (screenHeight - windowHeight); // 包含状态栏和导航栏高度之和
-difference = difference < 0 ? 0 : difference; // 安卓某些机型会出现负数情况
-// console.log('statusBarHeight', statusBarHeight);
-// console.log('screenHeight', screenHeight);
-// console.log('windowHeight', windowHeight);
 
 function ModelChangeBtn({
   show,
@@ -216,12 +206,12 @@ function VideoItem({ item }: { item: VideoItemType }) {
 }
 
 function MinVideoScreen() {
-  const { height: usewindowHeight } = useWindowDimensions(); // 不包含状态栏高度
+  const { height: windowHeight } = useWindowDimensions(); // 不包含状态栏高度
   const tabBarHeight = useBottomTabBarHeight();
-  // console.log('usewindowHeight', usewindowHeight);
+  // console.log('windowHeight', windowHeight);
   // console.log('tabBarHeight', tabBarHeight);
-
-  const height = usewindowHeight - tabBarHeight - difference;
+  // tabBar的实际高度比useBottomTabBarHeight()返回的高度要高一些，测试机是6px。
+  const height = windowHeight - tabBarHeight - 6;
   const [refreshing, setRefreshing] = React.useState(false);
   const [listMode, setListMode] = React.useState(false);
   const listModeRef = React.useRef<FlatList<VideoItemType>>(null);
@@ -440,7 +430,6 @@ function MinVideoScreen() {
         <StatusBar backgroundColor="#000" barStyle="light-content" />
       )}
       <FlatList
-        contentContainerStyle={{}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
