@@ -6,11 +6,12 @@ import {
   ActivityIndicator,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {
   Camera,
   CameraPermissionRequestResult,
-  useCameraDevice,
+  useCameraDevices,
   useCameraFormat,
   useCodeScanner,
 } from 'react-native-vision-camera';
@@ -24,6 +25,7 @@ import FastImage from 'react-native-fast-image';
 import { primaryColor } from '../common/const';
 import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
 import ZoomCamra from '../components/CameraZoom';
+import AntDesign from '@react-native-vector-icons/ant-design';
 
 const AnimatedText = Animated.createAnimatedComponent(TextInput);
 
@@ -39,6 +41,12 @@ export default function CameraExamplesScreen() {
   const [videoPath, setVideoPath] = useState('');
   const detectorResult = useSharedValue('扫码结果');
 
+  // const cameraDeviceBack = useCameraDevice('back');
+  const cameraDevices = useCameraDevices();
+  const [cameraDevice, setCameraDevice] = useState(
+    cameraDevices.filter(d => d.position === 'back')[0],
+  );
+
   useEffect(() => {
     (async () => {
       const cameraPermissionStatus = await Camera.requestCameraPermission();
@@ -46,8 +54,6 @@ export default function CameraExamplesScreen() {
       setCameraPermission(cameraPermissionStatus);
     })();
   }, []);
-
-  const cameraDevice = useCameraDevice('back');
 
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
@@ -69,6 +75,12 @@ export default function CameraExamplesScreen() {
   ]);
 
   if (!cameraDevice) return '没有找到相机';
+  const handleSwitchCamera = () => {
+    const nextDevice = cameraDevices.filter(
+      d => d.position !== cameraDevice.position,
+    )[0];
+    setCameraDevice(nextDevice);
+  };
   const handleTakePhoto = async () => {
     if (!camera.current) return;
     try {
@@ -263,19 +275,24 @@ export default function CameraExamplesScreen() {
   return (
     <CustomSafeAreaViws>
       <View style={styles.screen}>
-        <View style={styles.dropdownPickerWrapper}>
-          <DropDownPicker
-            open={open}
-            value={currentExample}
-            items={[
-              { label: '拍照', value: 'take-photo' },
-              { label: '录像', value: 'record-video' },
-              { label: '快照', value: 'take-snapshot' },
-              { label: '扫码', value: 'code-scanner' },
-            ]}
-            setOpen={setOpen}
-            setValue={handleChangePicketSelect}
-          />
+        <View style={styles.btnWrapper}>
+          <View style={styles.dropdownPickerWrapper}>
+            <DropDownPicker
+              open={open}
+              value={currentExample}
+              items={[
+                { label: '拍照', value: 'take-photo' },
+                { label: '录像', value: 'record-video' },
+                { label: '快照', value: 'take-snapshot' },
+                { label: '扫码', value: 'code-scanner' },
+              ]}
+              setOpen={setOpen}
+              setValue={handleChangePicketSelect}
+            />
+          </View>
+          <TouchableWithoutFeedback onPress={handleSwitchCamera}>
+            <AntDesign name="interaction" color={primaryColor} size={30} />
+          </TouchableWithoutFeedback>
         </View>
         {renderContent()}
       </View>
@@ -316,9 +333,15 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
   },
-  dropdownPickerWrapper: {
-    paddingHorizontal: 16,
+  btnWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingBottom: 16,
+    gap: 16,
+  },
+  dropdownPickerWrapper: {
+    width: '80%',
     zIndex: 9,
   },
   btnGroup: {
