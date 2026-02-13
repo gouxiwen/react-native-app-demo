@@ -171,15 +171,19 @@ https://blog.csdn.net/shuizhizhiyin/article/details/140548517
 
 ### 构建类型
 
-assembleRelease，assembleRelease 对应 build.gradle 中的 buildType，如 assembleDebug、assembleRelease，也可以自定义其他构建类型，如 staging
+assemblexxx 对应 build.gradle 中的 buildType，如 assembleDebug、assembleRelease，也可以自定义其他构建类型，如 staging
 
-执行./gradlew assembleRelease 打包安卓
+执行./gradlew assembleRelease 打包安卓 release 版本
 
 ### 不同风味打包
 
-assembleDevRelease，assembleStagingRelease，assembleProdRelease 对应 build.gradle 中的 productFlavors
+- 开发模式
 
---mode=DevDebug 为 productFlavors 和 buildTypes 组合的 build 变体，此命令等效于 cd android && ./gradlew installDevDebug，可以自由组合不同的构建类型和变体
+--mode=DevDebug 为 react-native run-android 命令构建 productFlavors 和 buildTypes 组合的 build 变体，此命令等效于 cd android && ./gradlew installDevDebug，可以自由组合不同的构建类型和变体
+--appIdSuffix \"dev.debug\""为 react-native run-android 命令启动特定应用，一般和--mode 参数对应
+
+- 生产模式
+  assembleDevRelease，assembleStagingRelease，assembleProdRelease 对应 build.gradle 中的 productFlavors
 
 android/app/src 下的 main 为默认的构建类型，可以创建不同的文件夹，如 dev、staging、prod，分别对应不同的风味，可以继承 main 的配置后进行个性化配置
 
