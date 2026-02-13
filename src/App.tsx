@@ -37,6 +37,9 @@ import DailyEnglishScreen from './views/DailyEnglish';
 import YiyanPoetryScreen from './views/YiyanPoetry';
 import TuringChatScreen from './views/TuringChat';
 import CameraExamplesScreen from './views/CameraExamples';
+import GameScreen from './views/Game';
+import AIToolsScreen from './views/AITools';
+import AIToolDetailScreen from './views/AIToolDetail';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 //打印接口域名配置信息
@@ -247,6 +250,24 @@ const RootStack = createNativeStackNavigator({
       screen: CameraExamplesScreen,
       options: {
         title: '相机',
+      },
+    },
+    Game: {
+      screen: GameScreen,
+      options: {
+        title: '记忆力游戏',
+      },
+    },
+    AITools: {
+      screen: AIToolsScreen,
+      options: {
+        title: 'AI工具汇总',
+      },
+    },
+    AIToolDetail: {
+      screen: AIToolDetailScreen,
+      options: {
+        title: '工具详情',
       },
     },
     VideoPlayer: {

@@ -102,12 +102,26 @@ function HomeScreen() {
                 route: 'TuringChat',
               },
               {
-                id: 8,
-                name: '相机',
-                icon: '📷',
-                color: '#007AFF',
-                route: 'Camera',
-              },
+              id: 8,
+              name: '相机',
+              icon: '📷',
+              color: '#007AFF',
+              route: 'Camera',
+            },
+            {
+              id: 9,
+              name: '记忆力游戏',
+              icon: '🧠',
+              color: '#FF6347',
+              route: 'Game',
+            },
+            {
+              id: 10,
+              name: 'AI工具汇总',
+              icon: '🛠️',
+              color: '#5AC8FA',
+              route: 'AITools',
+            },
             ].map(item => (
               <TouchableOpacity
                 key={item.id}
