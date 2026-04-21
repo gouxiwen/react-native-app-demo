@@ -12,9 +12,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
-import { fetchGetTuring } from '../services/http';
 import CustomSafeAreaViws from '../components/CustomSafeAreaViws';
 import { primaryColor } from '../common/const';
+import {
+  fetchSiliconFlowChatStream,
+  ChatMessage,
+} from '../services/http';
 
 const { width } = Dimensions.get('window');
 
@@ -32,7 +35,7 @@ function TuringChatScreen() {
   const [loading, setLoading] = React.useState(false);
   const flatListRef = React.useRef<FlatList>(null);
 
-  // 发送消息给图灵机器人
+  // 发送消息给硅基流动API
   const sendMessage = async () => {
     if (!inputText.trim()) {
       return;
@@ -57,39 +60,93 @@ function TuringChatScreen() {
     setInputText('');
     setLoading(true);
 
+    // 创建一个空的AI回复消息ID，用于后续更新
+    const botMessageId = (Date.now() + 1).toString();
+    // 不立即添加空的AI回复消息，等待接收到第一个内容时再添加
+
     try {
-      // 调用图灵机器人API
-      const res = await fetchGetTuring(inputText);
+      // 获取对话历史，用于上下文
+      const conversationHistory: ChatMessage[] = messages.map(msg => ({
+        role: msg.isUser ? 'user' : 'assistant',
+        content: msg.text,
+      }));
+
+      // 添加当前用户消息
+      conversationHistory.push({
+        role: 'user',
+        content: userMessage.text,
+      });
+
+      let fullText = '';
+      let hasAddedBotMessage = false;
+
+      // 调用硅基流动流式API
+      await fetchSiliconFlowChatStream(
+        {
+          messages: [
+            { role: 'system', content: '你是一个有用的助手' },
+            ...conversationHistory,
+          ],
+        },
+        // onMessage: 接收到流式内容时的回调
+        content => {
+          fullText += content;
+          
+          // 如果还没有添加AI回复消息，则添加
+          if (!hasAddedBotMessage) {
+            hasAddedBotMessage = true;
+            const botMessage: Message = {
+              id: botMessageId,
+              text: fullText,
+              isUser: false,
+              timestamp: new Date(),
+            };
+            setMessages(prevMessages => [...prevMessages, botMessage]);
+          } else {
+            // 更新消息内容
+            setMessages(prevMessages =>
+              prevMessages.map(msg =>
+                msg.id === botMessageId ? { ...msg, text: fullText } : msg,
+              ),
+            );
+          }
+          
+          // 滚动到底部
+          setTimeout(() => {
+            flatListRef.current?.scrollToEnd({ animated: true });
+          }, 50);
+        },
+        // onComplete: 流式传输完成时的回调
+        () => {
+          setLoading(false);
+        },
+        // onError: 发生错误时的回调
+        error => {
+          setLoading(false);
+          console.error('API调用失败:', error);
+          Toast.showWithGravity('请求失败，请稍后重试', Toast.LONG, Toast.TOP);
+          // 添加错误消息
+          const botMessage: Message = {
+            id: botMessageId,
+            text: '抱歉，发生了错误，请稍后重试。',
+            isUser: false,
+            timestamp: new Date(),
+          };
+          setMessages(prevMessages => [...prevMessages, botMessage]);
+        },
+      );
+    } catch (error) {
       setLoading(false);
-
-      if ((res as any).code !== 200) {
-        Toast.showWithGravity(
-          (res as any).msg || '请求失败',
-          Toast.LONG,
-          Toast.TOP,
-        );
-        return;
-      }
-
-      // 添加机器人回复
+      console.error('API调用失败:', error);
+      Toast.showWithGravity('请求失败，请稍后重试', Toast.LONG, Toast.TOP);
+      // 添加错误消息
       const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: (res as any).data || '抱歉，我没有理解您的问题。',
+        id: botMessageId,
+        text: '抱歉，发生了错误，请稍后重试。',
         isUser: false,
         timestamp: new Date(),
       };
-
-      setMessages(prevMessages => {
-        const newMessages = [...prevMessages, botMessage];
-        // 滚动到底部
-        setTimeout(() => {
-          flatListRef.current?.scrollToEnd({ animated: true });
-        }, 100);
-        return newMessages;
-      });
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
+      setMessages(prevMessages => [...prevMessages, botMessage]);
     }
   };
 

@@ -1,5 +1,6 @@
 // 全局使用的接口
-import { get } from './axios';
+import { get, post } from './axios';
+import EventSource from 'react-native-sse';
 // 定义接口：
 // url      请求地址
 // function 请求方法
@@ -59,7 +60,9 @@ export type VideoListParams = {
 //   return get('https://api.apiopen.top/api/getHaoKanVideo', data);
 // }
 export function fetchGetMinVideo(data: VideoListParams) {
-  return get(`http://baobab.kaiyanapp.com/api/v4/discovery/hot?start=${data.page}&num=${data.size}`);
+  return get(
+    `http://baobab.kaiyanapp.com/api/v4/discovery/hot?start=${data.page}&num=${data.size}`,
+  );
 }
 
 // ---------->车辆价格信息查询
@@ -75,6 +78,101 @@ export function fetchGetEnglishwords() {
 // ---------->图灵机器人
 export function fetchGetTuring(msg: string) {
   return get('https://v2.xxapi.cn/api/turing', { msg });
+}
+
+// ---------->硅基流动AI对话
+export type ChatMessage = {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+};
+
+export type SiliconFlowChatParams = {
+  model?: string;
+  messages: ChatMessage[];
+  stream?: boolean;
+};
+
+export function fetchSiliconFlowChat(params: SiliconFlowChatParams) {
+  return post(
+    'https://api.siliconflow.cn/v1/chat/completions',
+    {
+      model: params.model || 'Qwen/Qwen2.5-7B-Instruct',
+      messages: params.messages,
+      stream: params.stream || false,
+    },
+    {},
+    {
+      headers: {
+        Authorization:
+          'Bearer sk-vcsmjxxaanktozmkjkqkipjsisvbcoezstlvsxslbqqfddir',
+      },
+    },
+  );
+}
+
+// ---------->硅基流动AI流式对话
+export type StreamCallback = (content: string) => void;
+export type StreamCompleteCallback = () => void;
+export type StreamErrorCallback = (error: Error) => void;
+
+export async function fetchSiliconFlowChatStream(
+  params: SiliconFlowChatParams,
+  onMessage: StreamCallback,
+  onComplete: StreamCompleteCallback,
+  onError: StreamErrorCallback,
+) {
+  const eventSource = new EventSource(
+    'https://api.siliconflow.cn/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer sk-vcsmjxxaanktozmkjkqkipjsisvbcoezstlvsxslbqqfddir',
+      },
+      body: JSON.stringify({
+        model: params.model || 'Qwen/Qwen2.5-7B-Instruct',
+        messages: params.messages,
+        stream: true,
+      }),
+    },
+  );
+
+  eventSource.addEventListener('message', (event) => {
+    if (event.data === '[DONE]') {
+      onComplete();
+      eventSource.close();
+      return;
+    }
+
+    if (!event.data) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(event.data);
+      const content = parsed.choices?.[0]?.delta?.content;
+      if (content) {
+        onMessage(content);
+      }
+    } catch (e) {
+      console.error('解析流数据失败:', e);
+    }
+  });
+
+  eventSource.addEventListener('error', (error) => {
+    let errorMessage = '请求失败，请稍后重试';
+    
+    if ('message' in error) {
+      errorMessage = error.message;
+    } else if ('type' in error) {
+      errorMessage = `请求失败: ${error.type}`;
+    }
+    
+    onError(new Error(errorMessage));
+    eventSource.close();
+  });
+
+  return () => eventSource.close();
 }
 // ---------->随机一言/古诗词
 export function fetchGetYiyan(type: 'hitokoto' | 'poetry' = 'poetry') {
@@ -197,7 +295,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'OpenAI',
       isPaid: true,
       category: '对话助手',
-      description: 'ChatGPT是由OpenAI开发的大型语言模型，能够进行自然语言对话、生成创意内容、回答问题等多种任务。它基于GPT架构，通过海量文本数据训练而成，具备理解上下文和生成连贯文本的能力。',
+      description:
+        'ChatGPT是由OpenAI开发的大型语言模型，能够进行自然语言对话、生成创意内容、回答问题等多种任务。它基于GPT架构，通过海量文本数据训练而成，具备理解上下文和生成连贯文本的能力。',
       website: 'https://openai.com/chatgpt',
     },
     {
@@ -207,7 +306,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'Anthropic',
       isPaid: true,
       category: '对话助手',
-      description: 'Claude是由Anthropic开发的AI助手，专注于安全性和可靠性。它能够进行深入的对话，生成高质量的内容，以及分析和总结复杂的信息。Claude以其详细和准确的回答而闻名。',
+      description:
+        'Claude是由Anthropic开发的AI助手，专注于安全性和可靠性。它能够进行深入的对话，生成高质量的内容，以及分析和总结复杂的信息。Claude以其详细和准确的回答而闻名。',
       website: 'https://www.anthropic.com/claude',
     },
     {
@@ -217,7 +317,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'Google',
       isPaid: true,
       category: '对话助手',
-      description: 'Gemini是Google开发的多模态AI模型，能够理解和生成文本、图像、音频等多种类型的内容。它设计用于处理复杂的任务，提供准确的信息，并与用户进行自然的交互。',
+      description:
+        'Gemini是Google开发的多模态AI模型，能够理解和生成文本、图像、音频等多种类型的内容。它设计用于处理复杂的任务，提供准确的信息，并与用户进行自然的交互。',
       website: 'https://gemini.google.com',
     },
     {
@@ -227,7 +328,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'Midjourney Inc.',
       isPaid: true,
       category: '图像生成',
-      description: 'Midjourney是一款强大的AI图像生成工具，能够根据文本描述创建高质量的图像。它以其艺术风格和创意能力而闻名，被广泛用于设计、艺术创作和内容制作等领域。',
+      description:
+        'Midjourney是一款强大的AI图像生成工具，能够根据文本描述创建高质量的图像。它以其艺术风格和创意能力而闻名，被广泛用于设计、艺术创作和内容制作等领域。',
       website: 'https://www.midjourney.com',
     },
     {
@@ -237,7 +339,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'OpenAI',
       isPaid: true,
       category: '图像生成',
-      description: 'DALL·E 3是OpenAI开发的文本到图像生成模型，能够根据详细的文本描述创建准确、高质量的图像。它支持复杂的场景描述和多种艺术风格，为创意表达提供了新的可能性。',
+      description:
+        'DALL·E 3是OpenAI开发的文本到图像生成模型，能够根据详细的文本描述创建准确、高质量的图像。它支持复杂的场景描述和多种艺术风格，为创意表达提供了新的可能性。',
       website: 'https://openai.com/dall-e-3',
     },
     {
@@ -247,7 +350,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'Stability AI',
       isPaid: false,
       category: '图像生成',
-      description: 'Stable Diffusion是由Stability AI开发的开源图像生成模型，允许用户根据文本提示创建图像。作为开源项目，它可以在本地运行，为开发者和创作者提供了更多的灵活性和控制权。',
+      description:
+        'Stable Diffusion是由Stability AI开发的开源图像生成模型，允许用户根据文本提示创建图像。作为开源项目，它可以在本地运行，为开发者和创作者提供了更多的灵活性和控制权。',
       website: 'https://stability.ai/stable-diffusion',
     },
     {
@@ -257,7 +361,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'GitHub & OpenAI',
       isPaid: true,
       category: '编程助手',
-      description: 'GitHub Copilot是GitHub和OpenAI合作开发的AI编程助手，能够根据上下文自动生成代码建议。它集成到常见的IDE中，帮助开发者提高编码效率，减少重复工作，发现和修复错误。',
+      description:
+        'GitHub Copilot是GitHub和OpenAI合作开发的AI编程助手，能够根据上下文自动生成代码建议。它集成到常见的IDE中，帮助开发者提高编码效率，减少重复工作，发现和修复错误。',
       website: 'https://github.com/features/copilot',
     },
     {
@@ -267,7 +372,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'Codeium',
       isPaid: false,
       category: '编程助手',
-      description: 'Codeium是一款免费的AI代码助手，提供实时代码补全、智能搜索和文档生成等功能。它支持多种编程语言和编辑器，旨在帮助开发者编写更好的代码，更快地解决问题。',
+      description:
+        'Codeium是一款免费的AI代码助手，提供实时代码补全、智能搜索和文档生成等功能。它支持多种编程语言和编辑器，旨在帮助开发者编写更好的代码，更快地解决问题。',
       website: 'https://codeium.com',
     },
     {
@@ -277,7 +383,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'Notion',
       isPaid: true,
       category: '办公助手',
-      description: 'Notion AI是集成在Notion笔记应用中的AI助手，能够帮助用户生成内容、总结文档、回答问题等。它与Notion的工作流程无缝集成，为用户提供智能的文档管理和内容创作工具。',
+      description:
+        'Notion AI是集成在Notion笔记应用中的AI助手，能够帮助用户生成内容、总结文档、回答问题等。它与Notion的工作流程无缝集成，为用户提供智能的文档管理和内容创作工具。',
       website: 'https://www.notion.so/ai',
     },
     {
@@ -287,7 +394,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'Grammarly',
       isPaid: true,
       category: '办公助手',
-      description: 'Grammarly是一款AI驱动的写作助手，能够检查语法、拼写、标点和风格等问题。它提供实时建议，帮助用户改进写作质量，适用于学术论文、商务邮件和日常写作等多种场景。',
+      description:
+        'Grammarly是一款AI驱动的写作助手，能够检查语法、拼写、标点和风格等问题。它提供实时建议，帮助用户改进写作质量，适用于学术论文、商务邮件和日常写作等多种场景。',
       website: 'https://www.grammarly.com',
     },
     {
@@ -297,7 +405,8 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'Descript',
       isPaid: true,
       category: '音视频处理',
-      description: 'Descript是一款集成了AI技术的音视频编辑工具，提供文本转语音、语音克隆、自动转录等功能。它以直观的文本编辑界面为特色，简化了视频和音频的编辑流程，适合内容创作者和专业人士使用。',
+      description:
+        'Descript是一款集成了AI技术的音视频编辑工具，提供文本转语音、语音克隆、自动转录等功能。它以直观的文本编辑界面为特色，简化了视频和音频的编辑流程，适合内容创作者和专业人士使用。',
       website: 'https://www.descript.com',
     },
     {
@@ -307,11 +416,12 @@ export function fetchGetAIToolDetail(id: string) {
       company: 'Runway',
       isPaid: true,
       category: '音视频处理',
-      description: 'Runway ML是一款AI创意工具集，专注于视频生成和编辑。它提供了多种AI模型，支持风格转换、对象移除、深度合成等功能，为视频创作者提供了强大的工具，简化了复杂的视频制作流程。',
+      description:
+        'Runway ML是一款AI创意工具集，专注于视频生成和编辑。它提供了多种AI模型，支持风格转换、对象移除、深度合成等功能，为视频创作者提供了强大的工具，简化了复杂的视频制作流程。',
       website: 'https://runwayml.com',
     },
   ];
-  
+
   const tool = tools.find(t => t.id === id);
   if (tool) {
     return Promise.resolve({ data: tool });

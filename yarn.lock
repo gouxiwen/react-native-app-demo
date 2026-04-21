@@ -5792,6 +5792,11 @@ react-native-splash-screen@^3.3.0:
   resolved "https://registry.npmmirror.com/react-native-splash-screen/-/react-native-splash-screen-3.3.0.tgz#3af71ed17afe50fee69590a45aec399d071ead02"
   integrity sha512-rGjt6HkoSXxMqH4SQUJ1gnPQlPJV8+J47+4yhgTIan4bVvAwJhEeJH7wWt9hXSdH4+VfwTS0GTaflj1Tw83IhA==
 
+react-native-sse@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.npmmirror.com/react-native-sse/-/react-native-sse-1.2.1.tgz#d7d063173bf5f3cd2cb6978141ec5d57591dff4b"
+  integrity sha512-zejanlScF+IB9tYnbdry0MT34qjBXbiV/E72qGz33W/tX1bx8MXsbB4lxiuPETc9v/008vYZ60yjIstW22VlVg==
+
 react-native-tab-view@^4.2.0:
   version "4.2.0"
   resolved "https://registry.npmmirror.com/react-native-tab-view/-/react-native-tab-view-4.2.0.tgz#1d4ffce97c5875b99811d2b8109cad7d7da7eb74"

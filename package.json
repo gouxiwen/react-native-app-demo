@@ -47,6 +47,7 @@
     "react-native-simple-toast": "^3.3.2",
     "react-native-sound": "^0.13.0",
     "react-native-splash-screen": "^3.3.0",
+    "react-native-sse": "^1.2.1",
     "react-native-tab-view": "^4.2.0",
     "react-native-video": "^6.18.0",
     "react-native-video-controls": "^2.8.1",
