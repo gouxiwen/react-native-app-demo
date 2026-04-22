@@ -35,7 +35,7 @@ import OilPriceScreen from './views/OilPrice';
 import CarPriceScreen from './views/CarPrice';
 import DailyEnglishScreen from './views/DailyEnglish';
 import YiyanPoetryScreen from './views/YiyanPoetry';
-import TuringChatScreen from './views/TuringChat';
+import LLMChatScreen from './views/LLMChat';
 import CameraExamplesScreen from './views/CameraExamples';
 import GameScreen from './views/Game';
 import AIToolsScreen from './views/AITools';
@@ -240,8 +240,8 @@ const RootStack = createNativeStackNavigator({
         title: '每日诗词/一言',
       },
     },
-    TuringChat: {
-      screen: TuringChatScreen,
+    LLMChat: {
+      screen: LLMChatScreen,
       options: {
         title: 'AI问答',
       },
