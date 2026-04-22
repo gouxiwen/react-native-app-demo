@@ -1,6 +1,7 @@
 // 全局使用的接口
 import { get, post } from './axios';
 import EventSource from 'react-native-sse';
+import { siliconflow_API_KEY } from './apikey';
 // 定义接口：
 // url      请求地址
 // function 请求方法
@@ -127,7 +128,7 @@ export async function fetchSiliconFlowChatStream(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer sk-vcsmjxxaanktozmkjkqkipjsisvbcoezstlvsxslbqqfddir',
+        Authorization: `Bearer ${siliconflow_API_KEY}`,
       },
       body: JSON.stringify({
         model: params.model || 'Qwen/Qwen2.5-7B-Instruct',
